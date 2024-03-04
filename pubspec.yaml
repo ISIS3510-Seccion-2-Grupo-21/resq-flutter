@@ -12,6 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_bloc: ^8.1.4
+  equatable: ^2.0.5
   cupertino_icons: ^1.0.6
   firebase_core: ^2.25.5
   firebase_analytics: ^10.8.7
@@ -24,8 +26,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-  flutter_bloc: ^8.1.4
-  equatable: ^2.0.5
 
 flutter:
   uses-material-design: true
