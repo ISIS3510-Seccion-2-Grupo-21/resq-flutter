@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1074047703151",
+    "project_id": "resq-flutter",
+    "storage_bucket": "resq-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074047703151:android:bf044a95caf21b0a7a159a",
+        "android_client_info": {
+          "package_name": "com.example.resq"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBztYQ1bB_QH4egtCdGbFNqwZ87gYoVtmU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
