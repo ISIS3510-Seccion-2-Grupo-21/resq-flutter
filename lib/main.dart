@@ -1,8 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:resq/firebase_options.dart';
-import 'package:resq/view/university_search/screens/search.dart';
+import 'package:resq/view/login/screens/search.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
