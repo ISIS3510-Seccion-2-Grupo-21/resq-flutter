@@ -8,7 +8,7 @@ class Search extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Search University"),
+        title: const Text("Search your University"),
         actions: [
           IconButton(
             onPressed: () {
@@ -27,7 +27,7 @@ class Search extends StatelessWidget {
 class SearchUniversityList extends SearchDelegate {
 
   List<String> searchTerms = [
-    "Univesidad de los andes",
+    "Universidad de los andes",
     "Universidad de la sabana",
     "Universidad nacional",
   ];
