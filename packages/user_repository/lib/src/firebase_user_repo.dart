@@ -22,6 +22,7 @@ class FirebaseUserRepo implements UserRepository {
   @override
   Future<void> signIn(String email, String password) async {
     try {
+      final microsoftProvider = MicrosoftAuthProvider();
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
     } catch (e) {
