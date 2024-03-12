@@ -12,6 +12,7 @@ class MyTextField extends StatelessWidget {
 	final FocusNode? focusNode;
 	final String? errorMsg;
 	final String? Function(String?)? onChanged;
+  final int? maxLength;
 
 	const MyTextField({
     super.key,
@@ -25,12 +26,14 @@ class MyTextField extends StatelessWidget {
 		this.validator,
 		this.focusNode,
 		this.errorMsg,
-		this.onChanged
+		this.onChanged,
+    this.maxLength
   });
 	
 	@override
 	Widget build(BuildContext context) {
 		return TextFormField(
+      maxLength: maxLength,
       validator: validator,
       controller: controller,
       obscureText: obscureText,

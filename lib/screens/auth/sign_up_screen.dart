@@ -54,6 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 									SizedBox(
 										width: MediaQuery.of(context).size.width * 0.9,
 										child: MyTextField(
+                      maxLength: 35,
 											controller: emailController,
 											hintText: 'Email',
 											obscureText: false,
@@ -73,6 +74,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 									SizedBox(
 										width: MediaQuery.of(context).size.width * 0.9,
 										child: MyTextField(
+                      maxLength: 25,
 											controller: passwordController,
 											hintText: 'Password',
 											obscureText: obscurePassword,
@@ -149,7 +151,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 											}
 										),
 									),
-									const SizedBox(height: 10),
+									const SizedBox(height: 2),
 									Row(
 										mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 										crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,6 +212,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 									SizedBox(
 										width: MediaQuery.of(context).size.width * 0.9,
 										child: MyTextField(
+                      maxLength: 30,
 											controller: nameController,
 											hintText: 'Name',
 											obscureText: false,

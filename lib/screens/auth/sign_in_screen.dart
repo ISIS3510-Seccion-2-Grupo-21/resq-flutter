@@ -48,6 +48,7 @@ class _SignInScreenState extends State<SignInScreen> {
 							SizedBox(
 								width: MediaQuery.of(context).size.width * 0.9,
 								child: MyTextField(
+                  maxLength: 35,
 									controller: emailController,
 									hintText: 'Email',
 									obscureText: false,
@@ -68,6 +69,7 @@ class _SignInScreenState extends State<SignInScreen> {
 							SizedBox(
 								width: MediaQuery.of(context).size.width * 0.9,
 								child: MyTextField(
+                  maxLength: 25,
 									controller: passwordController,
 									hintText: 'Password',
 									obscureText: obscurePassword,
