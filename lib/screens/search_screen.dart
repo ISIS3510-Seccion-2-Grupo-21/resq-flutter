@@ -1,12 +1,11 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 
-
-class Search extends StatelessWidget {
-  const Search({super.key});
+class SearchScreen extends StatelessWidget {
+  const SearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+     return Scaffold(
       appBar: AppBar(
         title: const Text("Search your University"),
         actions: [
