@@ -8,3 +8,11 @@ sealed class SigninState extends Equatable {
 }
 
 final class SigninInitial extends SigninState {}
+
+class SignInSuccess extends SigninState {}
+class SignInFailure extends SigninState {
+  final String error;
+  
+  const SignInFailure(this.error);
+}
+class SignInProcess extends SigninState {}

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:user_repository/src/user_repo.dart';
 
 class FirebaseUserRepo implements UserRepository {
@@ -20,11 +21,14 @@ class FirebaseUserRepo implements UserRepository {
   }
 
   @override
-  Future<void> signIn(String email, String password) async {
+  Future<void> signIn() async {
     try {
-      // final microsoftProvider = MicrosoftAuthProvider();
-      await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
+      final microsoftProvider = MicrosoftAuthProvider();
+      if (kIsWeb) {
+        await _firebaseAuth.signInWithPopup(microsoftProvider);
+      } else {
+        await _firebaseAuth.signInWithProvider(microsoftProvider);
+      }
     } catch (e) {
       log(e.toString());
       rethrow;

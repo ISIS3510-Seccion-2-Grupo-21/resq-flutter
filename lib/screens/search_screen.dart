@@ -31,6 +31,10 @@ class SearchUniversityList extends SearchDelegate {
     "Universidad nacional",
   ];
 
+  void signIn(String university) {
+    print("Sign In");
+  }
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -70,6 +74,7 @@ class SearchUniversityList extends SearchDelegate {
         return ListTile(
           title: Text(result),
           onTap: () {
+            signIn(result);
             close(context, result);
           },
         );
