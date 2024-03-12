@@ -18,9 +18,9 @@ class MyAppView extends StatelessWidget {
           onBackground: Colors.black,
           primary: Color.fromRGBO(85, 210, 128, 1),
           onPrimary: Colors.black,
-          secondary: Color.fromRGBO(80, 225, 130, 1),
+          secondary: Color.fromRGBO(28, 28, 28, 1),
           onSecondary: Colors.white,
-					tertiary: Color.fromRGBO(28, 28, 28, 1),
+					tertiary: Color.fromRGBO(80, 225, 130, 1),
           error: Colors.red,
 					outline: Color(0xFF424242)
         ),

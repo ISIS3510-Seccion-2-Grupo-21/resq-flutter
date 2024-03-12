@@ -40,13 +40,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
 					child: Stack(
 						children: [
 							Align(
-								alignment: const AlignmentDirectional(20, -1.2),
+								alignment: const AlignmentDirectional(20, -1),
 								child: Container(
 									height: MediaQuery.of(context).size.width,
 									width: MediaQuery.of(context).size.width,
 									decoration: BoxDecoration(
 										shape: BoxShape.circle,
-										color: Theme.of(context).colorScheme.tertiary
+										color: Theme.of(context).colorScheme.secondary
 									),
 								),
 							),
@@ -57,7 +57,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
 									width: MediaQuery.of(context).size.width / 1.3,
 									decoration: BoxDecoration(
 										shape: BoxShape.circle,
-										color: Theme.of(context).colorScheme.secondary
+										color: Theme.of(context).colorScheme.tertiary
 									),
 								),
 							),
