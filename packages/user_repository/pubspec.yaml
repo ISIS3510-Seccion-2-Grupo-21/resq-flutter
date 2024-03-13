@@ -1,0 +1,22 @@
+name: user_repository
+description: repo that handles users
+publish_ti: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_auth: ^4.17.7
+  cloud_firestore: ^4.15.9
+  firebase_crashlytics: ^3.4.17
+  equatable: ^2.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
