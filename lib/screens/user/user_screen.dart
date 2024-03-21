@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:resq/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:resq/blocs/update_bloc/update.dart';
 import 'package:resq/screens/home/home_screen.dart';
 import 'package:resq/utils.dart';
@@ -20,7 +22,7 @@ class _UserScreenState extends State<UserScreen> {
   UserRole? _selectedRole;
 
   void selectImage() async {
-    Uint8List img = await pickImage(ImageSource.gallery);
+    Uint8List img = await pickImage(ImageSource.camera);
     setState(() {
       _image = img;
     });
@@ -30,8 +32,9 @@ class _UserScreenState extends State<UserScreen> {
     String role = _selectedRole.toString().split('.').last;
     String resp =
         await UpdateInformation().saveData(role: role, image: _image!);
-
-    print(resp);
+    if (resp.isNotEmpty) {
+    context.read<AuthenticationBloc>().add(ImageUploaded(resp));
+  }
   }
 
   @override

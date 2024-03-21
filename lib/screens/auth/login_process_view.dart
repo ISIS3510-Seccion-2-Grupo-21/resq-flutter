@@ -28,14 +28,17 @@ class LoginProcessView extends StatelessWidget {
 			),
 			home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
 				builder: (context, state) {
-					if(state.status == AuthenticationStatus.authenticated) {
+					if(state.status == AuthenticationStatus.role) {
 						return BlocProvider(
 							create: (context) => SignInBloc(
 								userRepository: context.read<AuthenticationBloc>().userRepository
 							),
-							child: const UserScreen(),
+							child: const HomeScreen(),
 						);
-					} else {
+					} 
+          else if (state.status == AuthenticationStatus.authenticated) {
+            return const UserScreen();
+          } else {
 						return const WelcomeScreen();
 					}
 				}

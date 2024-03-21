@@ -1,6 +1,6 @@
 part of 'authentication_bloc.dart';
 
-enum AuthenticationStatus {authenticated, unauthenticated, unknown}
+enum AuthenticationStatus {authenticated, unauthenticated, unknown, role}
 
 class AuthenticationState extends Equatable {
 	const AuthenticationState._({
@@ -12,6 +12,9 @@ class AuthenticationState extends Equatable {
 
 	const AuthenticationState.authenticated(User user) : 
 		this._(status: AuthenticationStatus.authenticated, user: user);
+
+  const AuthenticationState.role() :
+    this._(status: AuthenticationStatus.role);
 	
 	const AuthenticationState.unauthenticated() : 
 		this._(status: AuthenticationStatus.unauthenticated);
