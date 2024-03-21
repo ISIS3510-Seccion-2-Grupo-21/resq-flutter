@@ -2,9 +2,11 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:resq/blocs/update_bloc/update.dart';
+import 'package:resq/screens/home/home_screen.dart';
 import 'package:resq/utils.dart';
 
-enum UserRole { student, brigadeStudent, brigadeProffesor, proffesor}
+enum UserRole { student, brigadeStudent, brigadeProffesor, proffesor }
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -14,15 +16,22 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-
   Uint8List? _image;
   UserRole? _selectedRole;
 
   void selectImage() async {
-    Uint8List img = await pickImage(ImageSource.camera);
+    Uint8List img = await pickImage(ImageSource.gallery);
     setState(() {
       _image = img;
     });
+  }
+
+  void saveProfile() async {
+    String role = _selectedRole.toString().split('.').last;
+    String resp =
+        await UpdateInformation().saveData(role: role, image: _image!);
+
+    print(resp);
   }
 
   @override
@@ -35,16 +44,14 @@ class _UserScreenState extends State<UserScreen> {
           children: [
             Stack(
               children: [
-                _image != null ?
-                CircleAvatar(
-                  radius: 64,
-                  backgroundImage: MemoryImage(_image!)
-                ) :
-                const CircleAvatar(
-                  radius: 64,
-                  backgroundImage: NetworkImage(
-                      'https://static.thenounproject.com/png/363640-200.png'),
-                ),
+                _image != null
+                    ? CircleAvatar(
+                        radius: 64, backgroundImage: MemoryImage(_image!))
+                    : const CircleAvatar(
+                        radius: 64,
+                        backgroundImage: NetworkImage(
+                            'https://static.thenounproject.com/png/363640-200.png'),
+                      ),
                 Positioned(
                   bottom: -10,
                   left: 80,
@@ -70,7 +77,10 @@ class _UserScreenState extends State<UserScreen> {
                   child: Text(role.toString().split('.').last),
                 );
               }).toList(),
-            )
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+                onPressed: saveProfile, child: const Text('Save Profile'))
           ],
         ),
       ),

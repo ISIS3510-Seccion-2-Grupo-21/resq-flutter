@@ -4,14 +4,14 @@ class MyUserEntity extends Equatable {
 	final String userId;
 	final String email;
 	final String name;
-  final String? photoUrl;
+  final String? image;
   final String? role;
 
 	const MyUserEntity({
 		required this.userId,
 		required this.email,
 		required this.name,
-    this.photoUrl,
+    this.image,
     this.role
 	});
 
@@ -20,7 +20,7 @@ class MyUserEntity extends Equatable {
 			'userId': userId,
 			'email': email,
 			'name': name,
-      'photoUrl': photoUrl,
+      'image': image,
       'role': role
 		};
 	}
@@ -30,12 +30,12 @@ class MyUserEntity extends Equatable {
 			userId: doc['userId'], 
 			email: doc['email'], 
 			name: doc['name'],
-      photoUrl: doc['photoUrl'],
+      image: doc['image'],
       role: doc['role']
 		);
 	}
 
 	@override
-	List<Object?> get props => [userId, email, name, photoUrl, role];
+	List<Object?> get props => [userId, email, name, image, role];
 
 }
