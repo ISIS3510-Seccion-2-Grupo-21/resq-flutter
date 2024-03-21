@@ -6,3 +6,9 @@ sealed class UpdateUserEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class UpdateUserData extends UpdateUserEvent {
+  final MyUser updatedUser;
+
+  const UpdateUserData(this.updatedUser);
+}
