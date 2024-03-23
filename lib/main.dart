@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:resq/app.dart';
+import 'package:resq/app_view.dart';
+import 'package:resq/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:resq/firebase_options.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -18,4 +20,4 @@ void main() async {
 
   Bloc.observer = SimpleBlocObserver();
   runApp(MyApp(FirebaseUserRepo()));
-}
+  }
