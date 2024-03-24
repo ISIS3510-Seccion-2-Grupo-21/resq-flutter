@@ -41,6 +41,7 @@ dependencies:
   firebase_crashlytics: ^3.4.17
   equatable: ^2.0.5
   flutter_bloc: ^8.1.4
+  image_picker: ^1.0.7
 
   user_repository:
     path: packages/user_repository

@@ -12,3 +12,9 @@ class AuthenticationUserChanged extends AuthenticationEvent {
 
 	const AuthenticationUserChanged(this.user);
 }
+
+class ImageUploaded extends AuthenticationEvent {
+  final String imageUrl;
+
+  const ImageUploaded(this.imageUrl);
+}

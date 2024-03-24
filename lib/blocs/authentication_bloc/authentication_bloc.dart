@@ -25,6 +25,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 				emit(const AuthenticationState.unauthenticated());
 			}
 		});
+    on<ImageUploaded>((event, emit) {
+      emit(AuthenticationState.role());
+    });
   }
 	
 	@override
