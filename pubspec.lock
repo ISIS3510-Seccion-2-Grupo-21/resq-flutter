@@ -266,7 +266,7 @@ packages:
     source: hosted
     version: "2.12.0"
   firebase_crashlytics:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_crashlytics
       sha256: cf120df5b473f5f8cd24f9de663edc8aed3a1888d29d805076be0448bdee249e
