@@ -5,12 +5,12 @@ class MyUser extends Equatable {
   final String userId;
   final String email;
   final String name;
-  final String? image;
-  final String? role;
+  final String image;
+  final String role;
 
-  const MyUser({required this.userId, required this.email, required this.name, this.image, this.role});
+  const MyUser({required this.userId, required this.email, required this.name, required this.image, required this.role});
 
-  static const empty = MyUser(userId: '', email: '', name: '', image: null, role: null);
+  static const empty = MyUser(userId: '', email: '', name: '', image: '', role: '');
 
   MyUser copyWith({String? userId, String? email, String? name, String? image, String? role}) {
     return MyUser(

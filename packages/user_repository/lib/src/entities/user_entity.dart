@@ -4,15 +4,15 @@ class MyUserEntity extends Equatable {
 	final String userId;
 	final String email;
 	final String name;
-  final String? image;
-  final String? role;
+  final String image;
+  final String role;
 
 	const MyUserEntity({
 		required this.userId,
 		required this.email,
 		required this.name,
-    this.image,
-    this.role
+    required this.image,
+    required this.role
 	});
 
 	Map<String, Object?> toDocument() {

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:resq/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:resq/screens/auth/welcome_screen.dart';
 import 'package:resq/screens/home/home_screen.dart';
-import 'package:resq/screens/user/user_screen.dart';
 import '../../blocs/sign_in_bloc/sign_in_bloc.dart';
 
 class LoginProcessView extends StatelessWidget {
@@ -28,17 +27,15 @@ class LoginProcessView extends StatelessWidget {
 			),
 			home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
 				builder: (context, state) {
-					if(state.status == AuthenticationStatus.role) {
+					if(state.status == AuthenticationStatus.authenticated) {
 						return BlocProvider(
 							create: (context) => SignInBloc(
 								userRepository: context.read<AuthenticationBloc>().userRepository
 							),
 							child: const HomeScreen(),
 						);
-					} 
-          else if (state.status == AuthenticationStatus.authenticated) {
-            return const UserScreen();
-          } else {
+					}
+          else {
 						return const WelcomeScreen();
 					}
 				}

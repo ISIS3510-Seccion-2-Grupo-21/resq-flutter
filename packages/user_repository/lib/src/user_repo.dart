@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +18,4 @@ abstract class UserRepository {
   Future<String> uploadImage(String fileName, Uint8List file);
 
   Future<User> getCurrentUser();
-
-  Future<String> updloadData(MyUser updatedUser);
 }
