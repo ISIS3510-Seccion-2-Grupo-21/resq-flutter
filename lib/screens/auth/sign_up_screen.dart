@@ -25,18 +25,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
   UserRole? _selectedRole;
 
   void selectImage() async {
-    Uint8List img = await pickImage(ImageSource.camera);
-    setState(() {
-      _image = img;
-    });
+    try {
+      Uint8List? img = await pickImage(ImageSource.camera);
+      setState(() {
+        _image = img;
+      });
+    } catch (e) {
+      throw Exception('Error picking image: $e');
+    }
   }
 
   Future<String> saveProfile() async {
-    String resp = await UpdateInformation().saveData(image: _image!);
-    if (resp.isNotEmpty) {
-      return resp;
+    try {
+      if (_image == null) {
+        return "No hay imagen";
+      } else {
+        String resp = await UpdateInformation().saveData(image: _image!);
+        return resp;
+      }
+
+    } catch (e) {
+      throw Exception('Error saving image: $e');
     }
-    return "No hay imagen";
   }
 
   final passwordController = TextEditingController();
