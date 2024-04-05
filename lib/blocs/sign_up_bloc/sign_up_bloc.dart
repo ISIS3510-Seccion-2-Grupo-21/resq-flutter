@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:user_repository/user_repository.dart';
@@ -16,6 +18,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 			emit(SignUpProcess());
 			try {
         MyUser user = await _userRepository.signUp(event.user, event.password);
+        String imageurl = await _userRepository.uploadImage('profileImage${user.userId}', event.file);
+        user = user.copyWith(image: imageurl, role: event.role);
 				await _userRepository.setUserData(user);
 				emit(SignUpSuccess());
       } catch (e) {

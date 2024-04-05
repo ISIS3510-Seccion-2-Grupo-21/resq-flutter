@@ -12,6 +12,7 @@ class FirebaseUserRepo implements UserRepository {
   final FirebaseAuth _firebaseAuth;
   final usersCollection = FirebaseFirestore.instance.collection('users');
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   FirebaseUserRepo({
     FirebaseAuth? firebaseAuth,
@@ -71,18 +72,8 @@ class FirebaseUserRepo implements UserRepository {
   Future<String> uploadImage(String fileName, Uint8List file) async {
     Reference ref = _firebaseStorage.ref().child(fileName);
     UploadTask uploadTask = ref.putData(file);
-    TaskSnapshot taskSnapshot = await uploadTask;
-    String downloadURL = await taskSnapshot.ref.getDownloadURL();
-    return downloadURL;
-  }
-
-  @override
-  Future<User> getCurrentUser() async {
-    try {
-      return _firebaseAuth.currentUser!;
-    } catch (e) {
-      log(e.toString());
-      rethrow;
-    }
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+    return downloadUrl;
   }
 }

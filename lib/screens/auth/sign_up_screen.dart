@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:resq/blocs/update_bloc/update.dart';
 import 'package:resq/utils.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,20 +31,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
     } catch (e) {
       throw Exception('Error picking image: $e');
-    }
-  }
-
-  Future<String> saveProfile() async {
-    try {
-      if (_image == null) {
-        return "No hay imagen";
-      } else {
-        String resp = await UpdateInformation().saveData(image: _image!);
-        return resp;
-      }
-
-    } catch (e) {
-      throw Exception('Error saving image: $e');
     }
   }
 
@@ -306,18 +291,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         width: MediaQuery.of(context).size.width * 0.5,
                         child: TextButton(
                           onPressed: () {
-                            String imageurl = saveProfile().toString();
                             if (_formKey.currentState!.validate()) {
                               MyUser myUser = MyUser.empty;
                               myUser = myUser.copyWith(
                                 email: emailController.text,
                                 name: nameController.text,
-                                image: imageurl,
-                                role: _selectedRole.toString().split('.').last,
                               );
                               setState(() {
                                 context.read<SignUpBloc>().add(SignUpRequired(
-                                    myUser, passwordController.text));
+                                    myUser, passwordController.text, _image!, _selectedRole.toString().split('.').last));
                               });
                             }
                           },

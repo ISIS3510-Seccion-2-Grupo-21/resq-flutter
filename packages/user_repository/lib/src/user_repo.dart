@@ -15,6 +15,4 @@ abstract class UserRepository {
   Future<void> logOut();
 
   Future<String> uploadImage(String fileName, Uint8List file);
-
-  Future<User> getCurrentUser();
 }
