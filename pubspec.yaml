@@ -41,6 +41,8 @@ dependencies:
   firebase_crashlytics: ^3.4.17
   equatable: ^2.0.5
   flutter_bloc: ^8.1.4
+  image_picker: ^1.0.7
+  permission_handler: ^11.3.1
 
   user_repository:
     path: packages/user_repository
@@ -74,8 +76,6 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-   - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
