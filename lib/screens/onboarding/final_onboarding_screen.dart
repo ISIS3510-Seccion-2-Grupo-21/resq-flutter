@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:resq/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:resq/screens/auth/welcome_screen.dart';
 
 class FinalOnboardingScreen extends StatelessWidget {
