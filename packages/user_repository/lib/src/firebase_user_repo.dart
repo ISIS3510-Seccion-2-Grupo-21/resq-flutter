@@ -12,7 +12,6 @@ class FirebaseUserRepo implements UserRepository {
   final FirebaseAuth _firebaseAuth;
   final usersCollection = FirebaseFirestore.instance.collection('users');
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   FirebaseUserRepo({
     FirebaseAuth? firebaseAuth,

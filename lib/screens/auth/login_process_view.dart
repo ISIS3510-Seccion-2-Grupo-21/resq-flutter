@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:resq/blocs/authentication_bloc/authentication_bloc.dart';
-import 'package:resq/screens/auth/welcome_screen.dart';
 import 'package:resq/screens/home/home_screen.dart';
-import '../../blocs/sign_in_bloc/sign_in_bloc.dart';
+import 'package:resq/screens/onboarding/onboarding_parent_screen.dart';
+import '../../../../blocs/sign_in_bloc/sign_in_bloc.dart';
 
 class LoginProcessView extends StatelessWidget {
   const LoginProcessView({super.key});
@@ -36,7 +36,7 @@ class LoginProcessView extends StatelessWidget {
 						);
 					}
           else {
-						return const WelcomeScreen();
+						return OnboardingParentScreen();
 					}
 				}
 			)
