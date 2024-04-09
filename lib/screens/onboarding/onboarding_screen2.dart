@@ -10,25 +10,30 @@ class OnboardingScreen2 extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Background image
           Image.asset(
             'assets/onboarding2.png',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
           ),
-          // Next button at the bottom left corner
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: TextButton(
-                onPressed: navigateToNextScreen,
-                child: Text(
-                  'Next',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.grey[300],
+              child: InkWell(
+                onTap: navigateToNextScreen,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.transparent, 
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    'Next',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.grey[300],
+                    ),
                   ),
                 ),
               ),
