@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:resq/screens/auth/login_process.dart';
 import 'package:resq/screens/home/home_screen.dart';// Importa tu pantalla de inicio
 import 'package:resq/firebase_options.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -21,21 +22,11 @@ void main() async {
   await requestPermissions();
 
   // Run the app
-  runApp(MyApp()); // Cambia LoginProcess por MyApp
+  runApp(LoginProcess(FirebaseUserRepo())); // Cambia LoginProcess por MyApp
 }
 
 Future<void> requestPermissions() async {
   // Request camera and storage permissions
   await Permission.camera.request();
   await Permission.storage.request();
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Your App',
-      home: HomeScreen(), // Establece HomeScreen como la pantalla de inicio
-    );
-  }
 }
