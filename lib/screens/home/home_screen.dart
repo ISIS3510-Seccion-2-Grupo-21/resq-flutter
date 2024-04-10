@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
+import 'package:resq/screens/map/map_view.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -171,11 +172,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           SizedBox(height: 20),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Placeholder(
-                fallbackHeight: MediaQuery.of(context).size.height * 0.25,
-              ),
+          // Mapa "preview" con GestureDetector
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MapView()),
+              );
+            },
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.25,
+              child: MapView(),
             ),
           ),
         ],
@@ -183,6 +190,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
-
