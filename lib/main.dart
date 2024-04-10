@@ -1,10 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:resq/screens/auth/login_process.dart';
+import 'package:resq/screens/home/home_screen.dart';// Importa tu pantalla de inicio
 import 'package:resq/firebase_options.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:permission_handler/permission_handler.dart'; // Import the permission_handler package
+import 'package:permission_handler/permission_handler.dart'; // Importa el paquete de manejo de permisos
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,7 @@ void main() async {
   await requestPermissions();
 
   // Run the app
-  runApp(LoginProcess(FirebaseUserRepo()));
+  runApp(LoginProcess(FirebaseUserRepo())); // Cambia LoginProcess por MyApp
 }
 
 Future<void> requestPermissions() async {
