@@ -29,16 +29,14 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: 1), // Reducido el espacio
-          // Línea gris
+          SizedBox(height: 1),
           Divider(
             color: Colors.grey[300],
             thickness: 1,
             indent: MediaQuery.of(context).size.width * 0.08,
             endIndent: MediaQuery.of(context).size.width * 0.08,
           ),
-          SizedBox(height: 5), // Reducido el espacio
-          // Rectángulo gris
+          SizedBox(height: 5), 
           Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -46,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
               width: MediaQuery.of(context).size.width * 0.75,
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: const Color.fromRGBO(232, 232, 232, 1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
@@ -57,8 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          SizedBox(height: 5), // Reducido el espacio
-          // Botón con imagen
+          SizedBox(height: 5),
+          // Establecer navegación a newsletter
           Container(
             width: MediaQuery.of(context).size.width * 0.18,
             child: ElevatedButton(
@@ -86,8 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          SizedBox(height: 5), // Reducido el espacio
-          // Botones verdes con texto blanco
+          SizedBox(height: 5),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
@@ -148,8 +145,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          SizedBox(height: 5), // Reducido el espacio
-          // Botón deslizador
+          SizedBox(height: 5),
+          // Switch - Falta funcionalidad
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
@@ -173,8 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          SizedBox(height: 20), // Reducido el espacio
-          // Placeholder sin SizedBox
+          SizedBox(height: 20),
           Expanded(
             child: SingleChildScrollView(
               child: Placeholder(
