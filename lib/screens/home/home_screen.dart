@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool switchValue = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Homepage'),
+        title: const Text(''),
         actions: [
           IconButton(
             onPressed: () {
@@ -22,35 +29,71 @@ class HomeScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          SizedBox(height: 1), // Reducido el espacio
+          // Línea gris
+          Divider(
+            color: Colors.grey[300],
+            thickness: 1,
+            indent: MediaQuery.of(context).size.width * 0.08,
+            endIndent: MediaQuery.of(context).size.width * 0.08,
+          ),
+          SizedBox(height: 5), // Reducido el espacio
+          // Rectángulo gris
           Container(
             alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Container(
-              width: 200,
+              width: MediaQuery.of(context).size.width * 0.75,
               height: 40,
               decoration: BoxDecoration(
                 color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
                 child: Text(
-                  'Homepage',
-                  style: TextStyle(color: Colors.black, fontSize: 16),
+                  'Homepage Universidad de Los Andes',
+                  style: TextStyle(color: Colors.black, fontSize: 15),
                 ),
               ),
             ),
           ),
-          SizedBox(height: 20),
-          // Espacio para el newsletter
-          // Botones
+          SizedBox(height: 5), // Reducido el espacio
+          // Botón con imagen
+          Container(
+            width: MediaQuery.of(context).size.width * 0.18,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                  Colors.transparent,
+                ),
+                overlayColor: MaterialStateProperty.all<Color>(
+                  Colors.transparent,
+                ),
+                elevation: MaterialStateProperty.all(0),
+                shadowColor: MaterialStateProperty.all<Color>(
+                  Colors.transparent,
+                ),
+                shape: MaterialStateProperty.all<OutlinedBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: Image.asset("assets/newsletter.png"),
+              ),
+            ),
+          ),
+          SizedBox(height: 5), // Reducido el espacio
+          // Botones verdes con texto blanco
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
                 ElevatedButton(
-                  onPressed: () {
-                    // Acción del primer botón
-                  },
+                  onPressed: () {},
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
                       Color.fromRGBO(80, 225, 130, 1),
@@ -61,13 +104,14 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  child: Text('Contact the student brigade'),
+                  child: Text(
+                    'Contact the student brigade',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
                 SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () {
-                    // Acción del segundo botón
-                  },
+                  onPressed: () {},
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
                       Color.fromRGBO(80, 225, 130, 1),
@@ -78,13 +122,14 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  child: Text('Report MAAD case'),
+                  child: Text(
+                    'Report MAAD case',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
                 SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () {
-                    // Acción del tercer botón
-                  },
+                  onPressed: () {},
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
                       Color.fromRGBO(80, 225, 130, 1),
@@ -95,39 +140,53 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  child: Text('Safety tips on campus'),
+                  child: Text(
+                    'Safety tips on campus',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 5), // Reducido el espacio
           // Botón deslizador
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'Activate alerts',
-                  style: TextStyle(color: Colors.black, fontSize: 12),
+                  style: TextStyle(color: Colors.black, fontSize: 14),
                 ),
-                Spacer(),
+                SizedBox(width: 10),
                 Switch(
-                  value: true, // Cambiar por el valor de activación
+                  value: switchValue,
                   onChanged: (value) {
-                    // Acá se pone la acción cuando cambia el switch 
+                    setState(() {
+                      switchValue = value;
+                    });
                   },
+                  activeColor: Colors.green,
+                  inactiveThumbColor: Colors.grey,
                 ),
               ],
             ),
           ),
-          SizedBox(height: 20),
-          // Espacio para el mapa con geolocalización
+          SizedBox(height: 20), // Reducido el espacio
+          // Placeholder sin SizedBox
           Expanded(
-            child: Placeholder(), // Placeholder para el mapa
+            child: SingleChildScrollView(
+              child: Placeholder(
+                fallbackHeight: MediaQuery.of(context).size.height * 0.25,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 }
+
+
 
