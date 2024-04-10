@@ -25,6 +25,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 				emit(const AuthenticationState.unauthenticated());
 			}
 		});
+
+    on<LoginStarts>((event, emit) {
+      emit(const AuthenticationState.welcome());
+    });
   }
 	
 	@override

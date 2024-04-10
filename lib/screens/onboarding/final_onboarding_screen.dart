@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:resq/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:resq/screens/auth/welcome_screen.dart';
 
 class FinalOnboardingScreen extends StatelessWidget {
+  const FinalOnboardingScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,15 +22,17 @@ class FinalOnboardingScreen extends StatelessWidget {
           Center(
             child: SizedBox(
               width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.35, // Altura del SizedBox
+              height: MediaQuery.of(context).size.height *
+                  0.35, // Altura del SizedBox
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end, // Alinea el contenido al final del Column
+                mainAxisAlignment: MainAxisAlignment
+                    .end, // Alinea el contenido al final del Column
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => WelcomeScreen()));
+                      context.read<AuthenticationBloc>().add(const LoginStarts());
                     },
-                    child: Text('Get Started'),
+                    child: const Text('Get Started'),
                   ),
                 ],
               ),
