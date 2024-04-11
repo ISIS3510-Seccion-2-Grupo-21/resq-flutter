@@ -44,6 +44,10 @@ dependencies:
 
   user_repository:
     path: packages/user_repository
+  chat_repository:
+    path: packages/chat_repository
+  intl: ^0.19.0
+  shake: ^2.2.0
 
 dev_dependencies:
   flutter_test:

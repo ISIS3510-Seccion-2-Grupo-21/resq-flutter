@@ -7,6 +7,7 @@ import 'package:resq/firebase_options.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:user_repository/user_repository.dart';
 import 'simple_bloc_observer.dart';
+import 'package:resq/screens/chat/chat_view.dart';
 // import 'package:resq/screens/home/crash_view.dart';
 
 void main() async {
