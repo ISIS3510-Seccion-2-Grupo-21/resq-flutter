@@ -7,4 +7,5 @@ abstract class ChatRepository {
   //messages between
   Stream<List<ChatMessage>> messagesBetween(String userId1, String userId2);
   Future<String> getBrigadeUserId();
+  Future<String> getNormalUserId();
 }

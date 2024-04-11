@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
+import 'package:resq/blocs/chat_bloc/chat_bloc.dart';
+import 'package:resq/screens/chat/chat_view.dart';
+import 'package:shake/shake.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chat_repository/chat_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,7 +19,62 @@ class _HomeScreenState extends State<HomeScreen> {
   bool switchValue = true;
 
   @override
+  void initState() {
+    super.initState();
+    ShakeDetector detector = ShakeDetector.autoStart(
+      onPhoneShake: () {
+        print('Phone shook!');
+        _shakeDialog();
+        // Do stuff on phone shake
+        },
+      minimumShakeCount: 1,
+      shakeSlopTimeMS: 500,
+      shakeCountResetTime: 3000,
+      shakeThresholdGravity: 2.7,
+    );
+  }
+
+  Future<void> _shakeDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Are you ok?'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('The phone was shaken.'),
+                Text('Help will be called if you do not respond.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('I am ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final chatBlocProvider = BlocProvider(
+      create: (context) => ChatBloc(
+        chatRepository: FirebaseChatRepository(
+          firestore: FirebaseFirestore.instance,
+          firebaseAuth: FirebaseAuth.instance,
+        ),
+        firebaseAuth: FirebaseAuth.instance,
+      ),
+      child: const ChatScreen(),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
@@ -90,7 +151,12 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => chatBlocProvider),
+                    );
+                  },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
                       Color.fromRGBO(80, 225, 130, 1),

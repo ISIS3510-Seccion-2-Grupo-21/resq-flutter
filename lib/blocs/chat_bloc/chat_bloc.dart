@@ -28,7 +28,6 @@ class ChatMessageReceivedEvent extends ChatEvent {
 }
 
 class InitializeChatEvent extends ChatEvent {
-  //TODO
   @override
   List<Object?> get props => [];
 }
@@ -41,6 +40,15 @@ abstract class ChatState extends Equatable {
 class ChatInitialState extends ChatState {
   @override
   List<Object?> get props => [];
+}
+
+class ChatSecondUserFetchedState extends ChatState {
+  final String secondUserId;
+
+  const ChatSecondUserFetchedState(this.secondUserId);
+
+  @override
+  List<Object?> get props => [secondUserId];
 }
 
 class ChatLoadingState extends ChatState {
@@ -88,12 +96,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   void _onInitializeChat(InitializeChatEvent event, Emitter<ChatState> emit) async {
     emit(ChatLoadingState());
     await _getSecondUser();
+    _chatRepository.sendMessage('HELPISNEEDED', secondUserId, currentUser?.uid ?? '');
     _loadMessages();
     
   }
 
   Future<void> _getSecondUser() async {
-    secondUserId = await _chatRepository.getBrigadeUserId();
+    var currentUserRole = await currentUser?.getIdTokenResult().then((value) => value.claims!['role']);
+    print(currentUserRole);
+    if (currentUserRole != 'brigadeStudent'){
+      secondUserId = await _chatRepository.getBrigadeUserId();
+    } else {
+      secondUserId = await _chatRepository.getNormalUserId();
+    }
+    emit(ChatSecondUserFetchedState(secondUserId));
   }
 
   void _loadMessages() {

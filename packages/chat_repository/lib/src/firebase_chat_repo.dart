@@ -83,4 +83,16 @@ class FirebaseChatRepository implements ChatRepository{
   Future<String> getBrigadeUserId() {
     return _firestore.collection('users').where('role', isEqualTo: 'brigadeStudent').get().then((value) => value.docs.first.id);
   }
+
+  Future<String> getNormalUserId() async {
+    var listOfUsers = await _firestore.collection('users').where('role', isEqualTo: 'student').get();
+    for (var user in listOfUsers.docs) {
+      var messages = await _firestore.collection('chat_messages').where('from', isEqualTo: user.id).get();
+      var firstMessage = messages.docs.first;
+      if (firstMessage.data()['text'] == 'HELPISNEEDED') {
+        return user.id;
+      }
+    }
+    return '';
+  }
 }

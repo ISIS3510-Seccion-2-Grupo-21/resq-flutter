@@ -1,15 +1,15 @@
 import 'dart:io';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:bloc/bloc.dart';
 import 'package:chat_repository/chat_repository.dart';
-import 'package:shake/shake.dart';
 
 import '../../blocs/chat_bloc/chat_bloc.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  const ChatScreen({Key? key}) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -32,18 +32,6 @@ class _ChatScreenState extends State<ChatScreen> {
       text: 'Connecting you with a brigadier...',
       timestamp: DateTime.now(),
     ));
-    ShakeDetector detector = ShakeDetector.autoStart(
-      onPhoneShake: () {
-        print('Phone shook!');
-        _shakeDialog();
-        // Do stuff on phone shake
-        },
-      minimumShakeCount: 1,
-      shakeSlopTimeMS: 500,
-      shakeCountResetTime: 3000,
-      shakeThresholdGravity: 2.7,
-    );
-    // _brigadierJoined('Brigadier 1');
   }
 
   void _sendMessage() {
@@ -56,6 +44,8 @@ class _ChatScreenState extends State<ChatScreen> {
           isCurrentUser: true,
         ));
         _messageController.clear();
+        
+        _chatBloc.add(SendMessageEvent(text));
 
         // Add a system message when the chat starts
         if (_messages.length == 1) {
@@ -78,42 +68,17 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   List<Message> transformMessages(List<ChatMessage> messages) {
-    return messages.map((message) {
-      return BubbleMessage(
-        text: message.message,
-        timestamp: message.timestamp,
-        isCurrentUser: message.from == _chatBloc.currentUser?.uid,
-      );
-    }).toList();
+    return messages.map((message) { return transformMessage(message);}).toList();
   }
 
-  Future<void> _shakeDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Are you ok?'),
-          content: const SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('The phone was shaken.'),
-                Text('Help will be called if you do not respond.'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('I am ok'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
+  Message transformMessage(ChatMessage message) {
+    return BubbleMessage(
+      text: message.message,
+      timestamp: message.timestamp,
+      isCurrentUser: message.from == _chatBloc.currentUser?.uid,
     );
   }
+
 
   @override
   Widget build(BuildContext _context_) {
@@ -121,13 +86,24 @@ class _ChatScreenState extends State<ChatScreen> {
       listener: (context, state) {
         if (state is ChatMessageReceivedState) {
           setState(() {
-            _messages.addAll(transformMessages(state.messages));
+            for (var message in state.messages) {
+              var messagesText = _messages.map((message) => message.text).toList();
+              if (!messagesText.contains(transformMessage(message).text) && transformMessage(message).text != "HELPISNEEDED") {
+                _messages.add(BubbleMessage(
+                  text: message.message,
+                  timestamp: message.timestamp,
+                  isCurrentUser: message.from == _chatBloc.currentUser?.uid,
+                ));
+              }
+            }
           });
         } else if (state is ChatErrorState) {
           // Display the error message to the user
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.errorMessage)),
           );
+        } else if (state is ChatSecondUserFetchedState) {
+          _brigadierJoined('Brigadier');
         }
       },
       child: Scaffold(
@@ -201,7 +177,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
-abstract class Message {
+abstract class Message{
   final String text;
   final DateTime timestamp;
 
