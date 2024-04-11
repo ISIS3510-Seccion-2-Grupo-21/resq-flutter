@@ -10,6 +10,8 @@ sealed class SignUpEvent extends Equatable {
 class SignUpRequired extends SignUpEvent{
 	final MyUser user;
 	final String password;
+  final Uint8List file;
+  final String role;
 
-	const SignUpRequired(this.user, this.password);
+	const SignUpRequired(this.user, this.password, this.file, this.role);
 }

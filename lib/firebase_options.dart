@@ -3,17 +3,6 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
-import "package:flutter_dotenv/flutter_dotenv.dart";
-
-String androidApiKey = dotenv.env['FIREBASE_ANDROID_API_KEY'] as String;
-String andoridAppId = dotenv.env['FIREBASE_ANDROID_APP_ID'] as String;
-String androidSenderId = dotenv.env['FIREBASE_ANDROID_SENDER_ID'] as String;
-String projectId = dotenv.env['FIREBASE_PROJECT_ID'] as String;
-String storageBucket = dotenv.env['FIREBASE_STORAGE_BUCKET'] as String;
-String iosApiKey = dotenv.env['FIREBASE_IOS_APIKEY'] as String;
-String iosAppId = dotenv.env['FIREBASE_IOS_APP_ID'] as String;
-String iosSenderId = dotenv.env['FIREBASE_IOS_SENDER_ID'] as String;
-String iosBundle = dotenv.env['FIREBASE_IOS_BUNDLE'] as String;
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -59,21 +48,20 @@ class DefaultFirebaseOptions {
         );
     }
   }
-
-  static FirebaseOptions android = FirebaseOptions(
-    apiKey: androidApiKey,
-    appId: andoridAppId,
-    messagingSenderId: androidSenderId,
-    projectId: projectId,
-    storageBucket: storageBucket,
+static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyBztYQ1bB_QH4egtCdGbFNqwZ87gYoVtmU',
+    appId: '1:1074047703151:android:bf044a95caf21b0a7a159a',
+    messagingSenderId: '074047703151',
+    projectId: 'resq-flutter',
+    storageBucket: 'resq-flutter.appspot.com',
   );
 
-  static FirebaseOptions ios = FirebaseOptions(
-    apiKey: iosApiKey,
-    appId: iosAppId,
-    messagingSenderId: iosSenderId,
-    projectId: projectId,
-    storageBucket: storageBucket,
-    iosBundleId: iosBundle,
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyCvyKdRn5lJsnn3JUYwzQ8foQD6H4iq',
+    appId: '1:1074047703151:ios:49d2359232291bb27a159a',
+    messagingSenderId: '1074047703151',
+    projectId: 'resq-flutter',
+    storageBucket: 'resq-flutter.appspot.com',
+    iosBundleId: 'com.example.resq',
   );
 }
