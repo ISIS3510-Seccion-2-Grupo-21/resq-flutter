@@ -5,6 +5,7 @@ import 'package:resq/screens/home/home_screen.dart';// Importa tu pantalla de in
 import 'package:resq/firebase_options.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:user_repository/user_repository.dart';
+import 'package:resq/screens/chat/chat_view.dart';
 import 'package:permission_handler/permission_handler.dart'; // Importa el paquete de manejo de permisos
 
 void main() async {
