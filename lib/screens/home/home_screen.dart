@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        title: null, // const Text('')
         actions: [
           IconButton(
             onPressed: () {
@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Center(
                 child: Text(
-                  'Homepage Universidad de Los Andes',
+                  'Universidad de Los Andes Homepage',
                   style: TextStyle(color: Colors.black, fontSize: 15),
                 ),
               ),
