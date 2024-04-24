@@ -14,19 +14,23 @@ void main() async {
   );
 
   // Run the app
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: InternetCheckScreen(),
     );
   }
 }
 
 class InternetCheckScreen extends StatefulWidget {
+  const InternetCheckScreen({super.key});
+
   @override
   _InternetCheckScreenState createState() => _InternetCheckScreenState();
 }
