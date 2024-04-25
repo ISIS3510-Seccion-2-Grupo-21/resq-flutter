@@ -16,13 +16,20 @@ class FirebaseChatRepository implements ChatRepository{
   })  : _firestore = firestore,
         _firebaseAuth = firebaseAuth;
 
-  Future<void> sendMessage(String message, String fromUserId, String toUserId) async {
-    await _firestore.collection('chat_messages').add({
+  Future<ChatMessage> sendMessage(String message, String fromUserId, String toUserId) async {
+    final docRef = await _firestore.collection('chat_messages').add({
       'message': message,
       'from': fromUserId,
       'to': toUserId,
       'timestamp': FieldValue.serverTimestamp(),
     });
+    return ChatMessage(
+      id: docRef.id,
+      message: message,
+      from: fromUserId,
+      to: toUserId,
+      timestamp: DateTime.now(),
+    );
   }
 
   Stream<List<ChatMessage>> messagesFor(String userId) {
@@ -42,25 +49,28 @@ class FirebaseChatRepository implements ChatRepository{
               }).toList());
   }
 
-  Stream<List<ChatMessage>> messagesBetween(String userId1, String userId2) {
-    var streamController = StreamController<List<ChatMessage>>();
-
-    var stream1 = _firestore.collection('chat_messages')
+  Future<List<ChatMessage>> messagesBetween(String userId1, String userId2) async{
+    var query1 = await _firestore.collection('chat_messages')
       .where('to', isEqualTo: userId1)
       .where('from', isEqualTo: userId2)
       .orderBy('timestamp')
-      .snapshots();
+      .get();
 
-    var stream2 = _firestore.collection('chat_messages')
+    var query2 = await _firestore.collection('chat_messages')
       .where('to', isEqualTo: userId2)
       .where('from', isEqualTo: userId1)
       .orderBy('timestamp')
-      .snapshots();
+      .get();
 
-    stream1.listen((snapshot) => streamController.add(_mapSnapshotToChatMessages(snapshot)));
-    stream2.listen((snapshot) => streamController.add(_mapSnapshotToChatMessages(snapshot)));
+    var messages = <ChatMessage>[];
+    for (var doc in query1.docs) {
+      messages.add(objectToChatMessage(doc.data()));
+    }
+    for (var doc in query2.docs) {
+      messages.add(objectToChatMessage(doc.data()));
+    }
 
-    return streamController.stream;
+    return messages;
   }
 
   List<ChatMessage> _mapSnapshotToChatMessages(QuerySnapshot<Map<String, dynamic>> snapshot) {
@@ -85,14 +95,22 @@ class FirebaseChatRepository implements ChatRepository{
   }
 
   Future<String> getNormalUserId() async {
-    var listOfUsers = await _firestore.collection('users').where('role', isEqualTo: 'student').get();
-    for (var user in listOfUsers.docs) {
-      var messages = await _firestore.collection('chat_messages').where('from', isEqualTo: user.id).get();
-      var firstMessage = messages.docs.first;
-      if (firstMessage.data()['text'] == 'HELPISNEEDED') {
-        return user.id;
-      }
-    }
-    return '';
+    var messages = await _firestore.collection('chat_messages').where('message', isEqualTo: 'HELPISNEEDED').get();
+    var firstMessage = messages.docs.first;
+    return firstMessage.data()['from'];    
+  }
+
+  Future<String> getUserRole(String userId) {
+    return _firestore.collection('users').doc(userId).get().then((value) => value.data()?['role'] as String);
+  }
+
+  ChatMessage objectToChatMessage(Map<String,dynamic> object) {
+    return ChatMessage(
+      id: "placeholder",
+      message: object['message'] as String,
+      to: object['to'] as String,
+      from: object['from'] as String,
+      timestamp: (object['timestamp'] as Timestamp).toDate(),
+    );
   }
 }

@@ -68,10 +68,29 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   List<Message> transformMessages(List<ChatMessage> messages) {
-    return messages.map((message) { return transformMessage(message);}).toList();
+    List<Message> viewMessages = [];
+    for (var message in messages) {
+      var viewMessage = transformMessage(message);
+      var alreadyRendered = false;
+      for (var _message in _messages) {
+        if (_message.text == viewMessage.text) {
+          alreadyRendered = true;
+          break;
+        }
+      }
+      if (alreadyRendered) {
+        continue;
+      } else {
+        viewMessages.add(viewMessage);
+      }
+    }
+    return viewMessages;
   }
 
   Message transformMessage(ChatMessage message) {
+    if (message.message == 'HELPISNEEDED') {
+      return NoRenderMessessage(text: message.message, timestamp: message.timestamp);
+    }
     return BubbleMessage(
       text: message.message,
       timestamp: message.timestamp,
@@ -86,16 +105,7 @@ class _ChatScreenState extends State<ChatScreen> {
       listener: (context, state) {
         if (state is ChatMessageReceivedState) {
           setState(() {
-            for (var message in state.messages) {
-              var messagesText = _messages.map((message) => message.text).toList();
-              if (!messagesText.contains(transformMessage(message).text) && transformMessage(message).text != "HELPISNEEDED") {
-                _messages.add(BubbleMessage(
-                  text: message.message,
-                  timestamp: message.timestamp,
-                  isCurrentUser: message.from == _chatBloc.currentUser?.uid,
-                ));
-              }
-            }
+            _messages.addAll(transformMessages(state.messages));
           });
         } else if (state is ChatErrorState) {
           // Display the error message to the user
@@ -104,7 +114,12 @@ class _ChatScreenState extends State<ChatScreen> {
           );
         } else if (state is ChatSecondUserFetchedState) {
           _brigadierJoined('Brigadier');
+        } else if (state is ChatMessagesLoadedState) {
+          setState(() {
+            _messages.addAll(transformMessages(state.messages));
+          });
         }
+
       },
       child: Scaffold(
       appBar: AppBar(
@@ -199,6 +214,13 @@ class BubbleMessage extends Message {
 
 class SystemMessage extends Message {
   SystemMessage({
+    required super.text,
+    required super.timestamp,
+  });
+}
+
+class NoRenderMessessage extends Message {
+  NoRenderMessessage({
     required super.text,
     required super.timestamp,
   });
