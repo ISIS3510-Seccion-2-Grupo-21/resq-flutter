@@ -310,26 +310,3 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 
-Future<String> fetchingPostgres() async{
-
-  await Supabase.initialize(
-    url: 'https://mpmipngzctcklmcjoxgv.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wbWlwbmd6Y3Rja2xtY2pveGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTI3NTY2NDcsImV4cCI6MjAyODMzMjY0N30.yfaJIi4YQQnvcRPbtSCsP14xjQW7nPCOGfBTO1oxhZs'
-  );
-
-  final supabase = await Supabase.instance.client;
-
-  final result = await supabase.from('users').select().match({'role': 'brigadeStudent'}).count();
-  var temResult = 'There are ${result.count} brigade students available';
-  if (result.count == 0) {
-    temResult = 'There are no brigade students available';
-  } else if (result.count == 1) {
-    temResult = 'There is 1 brigade student available';
-  } else {
-    temResult = 'There are ${result.count} brigade students available';
-  }
-
-  return temResult;
-}
-
-
