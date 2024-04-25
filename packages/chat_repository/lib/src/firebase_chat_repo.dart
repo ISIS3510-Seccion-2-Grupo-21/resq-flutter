@@ -70,6 +70,9 @@ class FirebaseChatRepository implements ChatRepository{
       messages.add(objectToChatMessage(doc.data()));
     }
 
+    // Sort messages by timestamp
+    messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
     return messages;
   }
 
@@ -105,6 +108,9 @@ class FirebaseChatRepository implements ChatRepository{
   }
 
   ChatMessage objectToChatMessage(Map<String,dynamic> object) {
+    if (object['timestamp'] == null) {
+      return ChatMessage.empty;
+    }
     return ChatMessage(
       id: "placeholder",
       message: object['message'] as String,

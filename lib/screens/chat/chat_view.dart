@@ -90,6 +90,8 @@ class _ChatScreenState extends State<ChatScreen> {
   Message transformMessage(ChatMessage message) {
     if (message.message == 'HELPISNEEDED') {
       return NoRenderMessessage(text: message.message, timestamp: message.timestamp);
+    } else if (message == ChatMessage.empty) {
+      return NoRenderMessessage(text: message.message, timestamp: message.timestamp);
     }
     return BubbleMessage(
       text: message.message,
