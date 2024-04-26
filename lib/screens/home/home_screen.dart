@@ -25,16 +25,19 @@ class _HomeScreenState extends State<HomeScreen> {
   String brigadeStudents = 'There are 0 brigade students available';
   Timer? _dataFetchTimer;
 
-  Future<void> fetchingPostgres() async{
-
+  Future<void> fetchingPostgres() async {
     await Supabase.initialize(
-      url: 'https://mpmipngzctcklmcjoxgv.supabase.co',
-      anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wbWlwbmd6Y3Rja2xtY2pveGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTI3NTY2NDcsImV4cCI6MjAyODMzMjY0N30.yfaJIi4YQQnvcRPbtSCsP14xjQW7nPCOGfBTO1oxhZs'
-    );
+        url: 'https://mpmipngzctcklmcjoxgv.supabase.co',
+        anonKey:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wbWlwbmd6Y3Rja2xtY2pveGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTI3NTY2NDcsImV4cCI6MjAyODMzMjY0N30.yfaJIi4YQQnvcRPbtSCsP14xjQW7nPCOGfBTO1oxhZs');
 
     final supabase = Supabase.instance.client;
 
-    final result = await supabase.from('users').select().match({'role': 'brigadeStudent'}).count();
+    final result = await supabase
+        .from('users')
+        .select()
+        .match({'role': 'brigadeStudent'}).count();
+    print(result.count);
     var tempResult = '';
     if (result.count == 0) {
       tempResult = 'There are no brigade students available';
@@ -50,15 +53,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    _dataFetchTimer = Timer.periodic(const Duration(seconds: 1000), (_) => fetchingPostgres());
+    _dataFetchTimer = Timer.periodic(
+        const Duration(seconds: 1000), (_) => fetchingPostgres());
     fetchingPostgres();
     ShakeDetector detector = ShakeDetector.autoStart(
       onPhoneShake: () {
         _shakeDialog();
         // Do stuff on phone shake
-        },
+      },
       minimumShakeCount: 1,
       shakeSlopTimeMS: 500,
       shakeCountResetTime: 3000,
@@ -112,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(
           brigadeStudents,
           style: TextStyle(fontSize: 12),
-          ),
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -132,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
             indent: MediaQuery.of(context).size.width * 0.08,
             endIndent: MediaQuery.of(context).size.width * 0.08,
           ),
-          const SizedBox(height: 5), 
+          const SizedBox(height: 5),
           Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -246,11 +250,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ElevatedButton(
                   onPressed: () {
                     showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const EmergencyForm();
-                      }
-                    );
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const EmergencyForm();
+                        });
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
@@ -308,5 +311,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
