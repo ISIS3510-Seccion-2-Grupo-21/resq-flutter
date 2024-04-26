@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:newsletter_repository/newsletter_repository.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:resq/blocs/chat_bloc/chat_bloc.dart';
 import 'package:resq/screens/chat/chat_view.dart';
@@ -72,47 +73,85 @@ Future<List<Map<String, dynamic>>> _getNewsletterData() async {
     );
   }
 
-  Widget _buildCardSwiper() {
+Widget _buildCardStack() {
   return FutureBuilder<List<Map<String, dynamic>>>(
     future: _getNewsletterData(),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return CircularProgressIndicator(); // Indicador de carga mientras se obtienen los datos
+        return CircularProgressIndicator();
       } else {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
           final List<Map<String, dynamic>> data = snapshot.data!;
-          return SizedBox(
-            height: 300,
-            child: Swiper(
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                final newsletter = data[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Navegación al detalle de la noticia
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NewsDetailScreen(newsletter),
-                      ),
-                    );  
-                  },
-                  child: Card(
-                    child: Column(
-                      children: [
-                        Image.network(newsletter['imagen'] ?? ''),
-                        Container(
-                          padding: EdgeInsets.all(8),
-                          color: Colors.grey,
-                          child: Text(newsletter['titulo'] ?? ''),
+          int currentIndex = 0; // indice tarjeta superior
+
+          return GestureDetector(
+            onVerticalDragUpdate: (details) {
+              if (details.primaryDelta! < 0) {
+                // Swipe hacia arriba
+                if (currentIndex < data.length - 1) {
+                  setState(() {
+                    currentIndex++; // cambio de tarjeta
+                  });
+                }
+              } else if (details.primaryDelta! > 0) {
+                // Swipe hacia abajo
+                if (currentIndex > 0) {
+                  setState(() {
+                    currentIndex--; // tarjeta anterior
+                  });
+                }
+              }
+            },
+            child: Stack(
+              children: data.asMap().entries.map((entry) {
+                final index = entry.key;
+                final newsletter = entry.value;
+                final newsletterId = newsletter['id']; // identificador de la noticia
+                final position = index - currentIndex;
+
+                final baseColor = Colors.grey[158]!; // base tarjetas
+                final darkGray = Colors.grey[900]!; // gris oscuro para tarjeta final
+
+                // color gradualmente más oscuro según la posición en el stack
+                final backgroundColor = Color.lerp(baseColor, darkGray, position * 0.1);
+
+                return AnimatedPositioned(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  top: MediaQuery.of(context).size.height * 0.1 * position,
+                  child: GestureDetector(
+                    onTap: () {
+                      final newsletterRepository = FirebaseNewsletterRepository(
+                        firestore: FirebaseFirestore.instance,
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NewsDetailScreen(
+                            newsletterId: newsletterId,
+                            newsletterRepository: newsletterRepository,
+                          ),
                         ),
-                      ],
+                      );  
+                    },
+                    child: Card(
+                      color: backgroundColor,
+                      child: Column(
+                        children: [
+                          Image.network(newsletter['imagen'] ?? ''),
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            color: Colors.grey,
+                            child: Text(newsletter['titulo'] ?? ''),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
-              },
+              }).toList(),
             ),
           );
         }
@@ -120,8 +159,6 @@ Future<List<Map<String, dynamic>>> _getNewsletterData() async {
     },
   );
 }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +237,7 @@ Future<List<Map<String, dynamic>>> _getNewsletterData() async {
                   ),
                 ),
               ),
-              child: _buildCardSwiper(),
+              child: _buildCardStack(),
             ),
           ),
           SizedBox(height: 5),

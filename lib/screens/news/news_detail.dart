@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:newsletter_repository.dart/newsletter_repository.dart';
+import 'package:newsletter_repository/newsletter_repository.dart';
 
 class NewsDetailScreen extends StatelessWidget {
   final String newsletterId;
-  final NewsletterRepository newsletterRepository;
+  final FirebaseNewsletterRepository newsletterRepository;
 
   NewsDetailScreen({
     required this.newsletterId,
