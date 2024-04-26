@@ -14,7 +14,19 @@ class NewsDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Newsletter Detail'),
+        title: FutureBuilder<Map<String, dynamic>>(
+          future: newsletterRepository.getNewsletterById(newsletterId),
+          builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text('Loading...'); 
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}'); 
+            } else {
+              final newsletter = snapshot.data!;
+              return Text(newsletter['titulo']); 
+            }
+          },
+        ),
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: newsletterRepository.getNewsletterById(newsletterId),
