@@ -18,15 +18,26 @@ class NewsDetailScreen extends StatelessWidget {
           future: newsletterRepository.getNewsletterById(newsletterId),
           builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text('Loading...'); 
+              return Text('Loading...');
             } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}'); 
+              return Text('Error: ${snapshot.error}');
             } else {
               final newsletter = snapshot.data!;
-              return Text(newsletter['titulo']); 
+              return Text(newsletter['titulo']);
             }
           },
         ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Color.fromRGBO(80, 225, 130, 1),
+          onPressed: () {
+            Navigator.pop(context); // para volver a la pantalla anterior
+          },
+          padding: EdgeInsets.zero,
+          splashRadius: 24,
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: newsletterRepository.getNewsletterById(newsletterId),
