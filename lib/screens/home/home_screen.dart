@@ -3,10 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:resq/blocs/chat_bloc/chat_bloc.dart';
 import 'package:resq/screens/chat/chat_view.dart';
+import 'package:resq/screens/news/news_detail.dart';
 import 'package:shake/shake.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chat_repository/chat_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:card_swiper/card_swiper.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -33,6 +37,12 @@ class _HomeScreenState extends State<HomeScreen> {
       shakeThresholdGravity: 2.7,
     );
   }
+
+Future<List<Map<String, dynamic>>> _getNewsletterData() async {
+  final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+      await FirebaseFirestore.instance.collection('newsletters').get();
+  return querySnapshot.docs.map((doc) => doc.data()).toList();
+}
 
   Future<void> _shakeDialog() async {
     return showDialog<void>(
@@ -61,6 +71,57 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+
+  Widget _buildCardSwiper() {
+  return FutureBuilder<List<Map<String, dynamic>>>(
+    future: _getNewsletterData(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return CircularProgressIndicator(); // Indicador de carga mientras se obtienen los datos
+      } else {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          final List<Map<String, dynamic>> data = snapshot.data!;
+          return SizedBox(
+            height: 300,
+            child: Swiper(
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final newsletter = data[index];
+                return GestureDetector(
+                  onTap: () {
+                    // Navegación al detalle de la noticia
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NewsDetailScreen(newsletter),
+                      ),
+                    );  
+                  },
+                  child: Card(
+                    child: Column(
+                      children: [
+                        Image.network(newsletter['imagen'] ?? ''),
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          color: Colors.grey,
+                          child: Text(newsletter['titulo'] ?? ''),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      }
+    },
+  );
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -139,10 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              child: SizedBox(
-                width: double.infinity,
-                child: Image.asset("assets/newsletter.png"),
-              ),
+              child: _buildCardSwiper(),
             ),
           ),
           SizedBox(height: 5),
