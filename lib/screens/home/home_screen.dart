@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 Future<List<Map<String, dynamic>>> _getNewsletterData() async {
   final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-      await FirebaseFirestore.instance.collection('newsletters').get();
+      await FirebaseFirestore.instance.collection('newsletter').get();
   return querySnapshot.docs.map((doc) => doc.data()).toList();
 }
 
@@ -83,6 +83,8 @@ Widget _buildCardStack() {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
+          print("worlin???");
+          print(snapshot);
           final List<Map<String, dynamic>> data = snapshot.data!;
           int currentIndex = 0; // indice tarjeta superior
 
@@ -104,55 +106,62 @@ Widget _buildCardStack() {
                 }
               }
             },
-            child: Stack(
-              children: data.asMap().entries.map((entry) {
-                final index = entry.key;
-                final newsletter = entry.value;
-                final newsletterId = newsletter['id']; // identificador de la noticia
-                final position = index - currentIndex;
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.75,
+              height: MediaQuery.of(context).size.height * 0.25,
+              alignment: Alignment.center,
+              child: Stack(
+                children: data.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final newsletter = entry.value;
+                  final newsletterId = newsletter['id']; // identificador de la noticia
+                  final position = index - currentIndex;
 
-                final baseColor = Colors.grey[158]!; // base tarjetas
-                final darkGray = Colors.grey[900]!; // gris oscuro para tarjeta final
+                  final baseColor = Color.fromARGB(255, 165, 165, 165)!; // base tarjetas
+                  final darkGray = Colors.grey[900]!; // gris oscuro para tarjeta final
+                  // color gradualmente más oscuro según la posición en el stack
+                  final backgroundColor = Color.lerp(baseColor, darkGray, position * 0.1);
 
-                // color gradualmente más oscuro según la posición en el stack
-                final backgroundColor = Color.lerp(baseColor, darkGray, position * 0.1);
-
-                return AnimatedPositioned(
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  top: MediaQuery.of(context).size.height * 0.1 * position,
-                  child: GestureDetector(
-                    onTap: () {
-                      final newsletterRepository = FirebaseNewsletterRepository(
-                        firestore: FirebaseFirestore.instance,
-                      );
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => NewsDetailScreen(
-                            newsletterId: newsletterId,
-                            newsletterRepository: newsletterRepository,
+                  return AnimatedPositioned(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    top: MediaQuery.of(context).size.height * 0.1 * position,
+                    child: GestureDetector(
+                      onTap: () {
+                        final newsletterRepository = FirebaseNewsletterRepository(
+                          firestore: FirebaseFirestore.instance,
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NewsDetailScreen(
+                              newsletterId: newsletterId,
+                              newsletterRepository: newsletterRepository,
+                            ),
                           ),
+                        );  
+                      },
+                      child: Card(
+                        color: backgroundColor,
+                        child: Column(
+                          children: [
+                            Image.network(newsletter['imagen'] ?? '',
+                              width: MediaQuery.of(context).size.width * 0.75,
+                              height: MediaQuery.of(context).size.height * 0.15,
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(8),
+                              color: Colors.grey,
+                              child: Text(newsletter['titulo'] ?? ''),
+                            ),
+                          ],
                         ),
-                      );  
-                    },
-                    child: Card(
-                      color: backgroundColor,
-                      child: Column(
-                        children: [
-                          Image.network(newsletter['imagen'] ?? ''),
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            color: Colors.grey,
-                            child: Text(newsletter['titulo'] ?? ''),
-                          ),
-                        ],
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
-            ),
+                  );
+                }).toList(),
+              ),
+            )
           );
         }
       }
