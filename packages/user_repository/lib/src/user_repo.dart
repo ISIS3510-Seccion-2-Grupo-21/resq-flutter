@@ -16,4 +16,5 @@ abstract class UserRepository {
 
   Future<String> uploadImage(String fileName, Uint8List file);
 
+  Future<void> uploadReport(String type, String scope, String description);
 }
