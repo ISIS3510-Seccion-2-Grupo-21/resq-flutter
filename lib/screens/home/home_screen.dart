@@ -10,6 +10,7 @@ import 'package:shake/shake.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chat_repository/chat_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:user_repository/user_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {

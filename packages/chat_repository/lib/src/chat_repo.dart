@@ -2,10 +2,12 @@
 import 'models/models.dart';
 
 abstract class ChatRepository {
-  Future<void> sendMessage(String message, String forUserId, String fromUserId);
+  Future<ChatMessage> sendMessage(String message, String fromUserId, String toUserId);
   Stream<List<ChatMessage>> messagesFor(String userId);
   //messages between
-  Stream<List<ChatMessage>> messagesBetween(String userId1, String userId2);
+  Future<List<ChatMessage>> messagesBetween(String userId1, String userId2);
   Future<String> getBrigadeUserId();
   Future<String> getNormalUserId();
+
+  Future<String> getUserRole(String userId);
 }

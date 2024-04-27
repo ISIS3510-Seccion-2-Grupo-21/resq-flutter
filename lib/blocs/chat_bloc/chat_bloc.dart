@@ -32,6 +32,18 @@ class InitializeChatEvent extends ChatEvent {
   List<Object?> get props => [];
 }
 
+class ChatWaitingEvent extends ChatEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class LoadingMessagesEvent extends ChatEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+
+
 // States
 abstract class ChatState extends Equatable {
   const ChatState();
@@ -56,14 +68,31 @@ class ChatLoadingState extends ChatState {
   List<Object?> get props => [];
 }
 
-class ChatMessageReceivedState extends ChatState {
+class ChatMessagesLoadedState extends ChatState {
   final List<ChatMessage> messages;
-  final bool isInitialLoad;
 
-  const ChatMessageReceivedState(this.messages, {this.isInitialLoad = false});
+  const ChatMessagesLoadedState(this.messages);
 
   @override
-  List<Object?> get props => [messages, isInitialLoad];
+  List<Object?> get props => [messages];
+}
+
+class ChatMessageReceivedState extends ChatState {
+  final List<ChatMessage> messages;
+
+  const ChatMessageReceivedState(this.messages);
+
+  @override
+  List<Object?> get props => [messages];
+}
+
+class ChatMessageSentState extends ChatState {
+  final ChatMessage message;
+
+  const ChatMessageSentState(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }
 
 class ChatErrorState extends ChatState {
@@ -74,11 +103,18 @@ class ChatErrorState extends ChatState {
   @override
   List<Object?> get props => [errorMessage];
 }
+
+class ChatWaitingState extends ChatState {
+  @override
+  List<Object?> get props => [];
+}
+
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final ChatRepository _chatRepository;
   final FirebaseAuth _firebaseAuth;
-  late final Stream<List<ChatMessage>> _messageStream;
   late final String secondUserId;
+  late final String _currentUserRole;
+  late List<ChatMessage> _messages;
 
   ChatBloc({
     required ChatRepository chatRepository,
@@ -89,22 +125,26 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<InitializeChatEvent>(_onInitializeChat);
     on<SendMessageEvent>(_onSendMessage);
     on<ChatMessageReceivedEvent>(_onChatMessageReceived);
+    on<ChatWaitingEvent>(_onChatWaiting);
+    on<LoadingMessagesEvent>(_loadMessages);
+    
   }
 
   User? get currentUser => _firebaseAuth.currentUser;
 
   void _onInitializeChat(InitializeChatEvent event, Emitter<ChatState> emit) async {
     emit(ChatLoadingState());
-    await _getSecondUser();
-    _chatRepository.sendMessage('HELPISNEEDED', secondUserId, currentUser?.uid ?? '');
-    _loadMessages();
-    
+    await _getSecondUser(emit);
+    if (_currentUserRole != 'brigadeStudent') {
+      _chatRepository.sendMessage('HELPISNEEDED', currentUser?.uid ?? '', secondUserId);
+    }
+    add(LoadingMessagesEvent());
   }
 
-  Future<void> _getSecondUser() async {
-    var currentUserRole = await currentUser?.getIdTokenResult().then((value) => value.claims!['role']);
-    print(currentUserRole);
-    if (currentUserRole != 'brigadeStudent'){
+  Future<void> _getSecondUser(Emitter<ChatState> emit) async {
+    _currentUserRole = await _chatRepository.getUserRole(currentUser?.uid ?? '');
+
+    if (_currentUserRole != 'brigadeStudent') {
       secondUserId = await _chatRepository.getBrigadeUserId();
     } else {
       secondUserId = await _chatRepository.getNormalUserId();
@@ -112,34 +152,47 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(ChatSecondUserFetchedState(secondUserId));
   }
 
-  void _loadMessages() {
-    _messageStream = _chatRepository.messagesBetween(currentUser?.uid ?? '', secondUserId);
-    _messageStream.listen((messages) {
-      add(ChatMessageReceivedEvent(messages));
-    }, onError: (error) {
-      emit(ChatErrorState('Failed to load chat history: $error'));
-    });
+  // void _loadMessages(Emitter<ChatState> emit) {
+  //   _messageStream = _chatRepository.messagesBetween(currentUser?.uid ?? '', secondUserId);
+  //   _messageStream.listen((messages) {
+  //     emit(ChatMessagesLoadedState(messages));
+  //     add(ChatMessageReceivedEvent(messages.where((message) => message.timestamp.isAfter(DateTime.now().subtract(const Duration(seconds: 1)))).toList()));
+  //   }, onError: (error) {
+  //     emit(ChatErrorState('Failed to load chat history: $error'));
+  //   });
+  // }
+  void _loadMessages(LoadingMessagesEvent event, Emitter<ChatState> emit) async {
+    _messages = await _chatRepository.messagesBetween(currentUser?.uid ?? '', secondUserId);
+    emit(ChatMessagesLoadedState(_messages));
+    add(ChatWaitingEvent());
   }
 
   void _onChatMessageReceived(ChatMessageReceivedEvent event, Emitter<ChatState> emit) {
-    emit(ChatMessageReceivedState(event.messages, isInitialLoad: true));
+    var newMessages = event.messages.where((message) => !_messages.contains(message)).toList();
+    emit(ChatMessageReceivedState(newMessages));
+    add(ChatWaitingEvent());
   }
 
   Future<void> _onSendMessage(SendMessageEvent event, Emitter<ChatState> emit) async {
     emit(ChatLoadingState());
     try {
-      await _chatRepository.sendMessage(event.message, secondUserId, currentUser?.uid ?? '');
-      add(ChatMessageReceivedEvent([
-        ChatMessage(
-          id: UniqueKey().toString(),
-          message: event.message,
-          to: secondUserId,
-          from: currentUser?.uid ?? '',
-          timestamp: DateTime.now(),
-        ),
-      ]));
+      final sentMessage = await _chatRepository.sendMessage(event.message, currentUser?.uid ?? '', secondUserId);
+      emit(ChatMessageSentState(sentMessage));
     } catch (e) {
       emit(ChatErrorState('Failed to send message: $e'));
     }
+    add(ChatWaitingEvent());
   }
+
+  void _onChatWaiting(ChatWaitingEvent event, Emitter<ChatState> emit) async {
+    emit(ChatWaitingState());
+    var newMessages = await _chatRepository.messagesBetween(currentUser?.uid ?? '', secondUserId);
+    if (newMessages.length > _messages.length) {
+      add(ChatMessageReceivedEvent(newMessages));
+    } else {
+      await Future.delayed(const Duration(seconds: 1));
+      add(ChatWaitingEvent());
+    }
+  }
+    
 }
