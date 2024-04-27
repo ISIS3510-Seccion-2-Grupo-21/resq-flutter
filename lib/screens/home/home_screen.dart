@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:resq/blocs/chat_bloc/chat_bloc.dart';
+import 'package:resq/main.dart';
 import 'package:resq/screens/chat/chat_view.dart';
 import 'package:resq/screens/home/emergency_form.dart';
 import 'package:shake/shake.dart';
@@ -55,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    checkConnectivityAndShowMessage();
     _dataFetchTimer = Timer.periodic(
         const Duration(seconds: 1000), (_) => fetchingPostgres());
     fetchingPostgres();
@@ -69,6 +71,79 @@ class _HomeScreenState extends State<HomeScreen> {
       shakeThresholdGravity: 2.7,
     );
   }
+
+  Future<void> checkConnectivityAndShowMessage() async {
+    bool isConnected = await MyApp.checkInternetConnection();
+    if (!isConnected) {
+      showNoConnectionMessage(context);
+    }
+  }
+
+void showNoConnectionMessage(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Stack(
+        children: [
+          // fondo gris semi-transparente
+          Container(
+            color: Colors.black.withOpacity(0.2), 
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+          ),
+          AlertDialog(
+            backgroundColor: Colors.white,
+            content: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey[900]!), 
+              ),
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'No Wi-Fi connection',
+                    style: TextStyle(
+                      color: Colors.grey[900], 
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  SizedBox(height: 6.0),
+                  Text(
+                    'Connect to Wi-Fi to access all the features of the app from the home screen.',
+                    style: TextStyle(
+                      color: Colors.grey[900], 
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed:() {
+                  Navigator.pop(context);
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    const Color.fromRGBO(80, 225, 130, 1),
+                  ),
+                ),
+                child: Text(
+                  'OK',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
 
   Future<void> _shakeDialog() async {
     return showDialog<void>(
