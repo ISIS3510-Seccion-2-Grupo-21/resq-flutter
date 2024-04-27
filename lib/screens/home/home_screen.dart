@@ -2,14 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:newsletter_repository/newsletter_repository.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:resq/blocs/chat_bloc/chat_bloc.dart';
 import 'package:resq/screens/chat/chat_view.dart';
+import 'package:resq/screens/news/news_detail.dart';
 import 'package:resq/screens/home/emergency_form.dart';
 import 'package:shake/shake.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chat_repository/chat_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:card_swiper/card_swiper.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 import 'package:user_repository/user_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -71,6 +76,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+Future<List<Map<String, dynamic>>> _getNewsletterData() async {
+  final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+      await FirebaseFirestore.instance.collection('newsletter').get();
+  return querySnapshot.docs.map((doc) => doc.data()).toList();
+}
+
   Future<void> _shakeDialog() async {
     return showDialog<void>(
       context: context,
@@ -98,6 +109,102 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+
+Widget _buildCardStack() {
+  return FutureBuilder<List<Map<String, dynamic>>>(
+    future: _getNewsletterData(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return CircularProgressIndicator();
+      } else {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          print("worlin???");
+          print(snapshot);
+          final List<Map<String, dynamic>> data = snapshot.data!;
+          int currentIndex = 0; // indice tarjeta superior
+
+          return GestureDetector(
+            onVerticalDragUpdate: (details) {
+              if (details.primaryDelta! < 0) {
+                // Swipe hacia arriba
+                if (currentIndex < data.length - 1) {
+                  setState(() {
+                    currentIndex++; // cambio de tarjeta
+                  });
+                }
+              } else if (details.primaryDelta! > 0) {
+                // Swipe hacia abajo
+                if (currentIndex > 0) {
+                  setState(() {
+                    currentIndex--; // tarjeta anterior
+                  });
+                }
+              }
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.75,
+              height: MediaQuery.of(context).size.height * 0.25,
+              alignment: Alignment.center,
+              child: Stack(
+                children: data.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final newsletter = entry.value;
+                  final newsletterId = newsletter['id']; // identificador de la noticia
+                  final position = index - currentIndex;
+
+                  final baseColor = Color.fromARGB(255, 165, 165, 165)!; // base tarjetas
+                  final darkGray = Colors.grey[900]!; // gris oscuro para tarjeta final
+                  // color gradualmente más oscuro según la posición en el stack
+                  final backgroundColor = Color.lerp(baseColor, darkGray, position * 0.1);
+
+                  return AnimatedPositioned(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    top: MediaQuery.of(context).size.height * 0.1 * position,
+                    child: GestureDetector(
+                      onTap: () {
+                        final newsletterRepository = FirebaseNewsletterRepository(
+                          firestore: FirebaseFirestore.instance,
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NewsDetailScreen(
+                              newsletterId: newsletterId,
+                              newsletterRepository: newsletterRepository,
+                            ),
+                          ),
+                        );  
+                      },
+                      child: Card(
+                        color: backgroundColor,
+                        child: Column(
+                          children: [
+                            Image.network(newsletter['imagen'] ?? '',
+                              width: MediaQuery.of(context).size.width * 0.75,
+                              height: MediaQuery.of(context).size.height * 0.15,
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(8),
+                              color: Colors.grey,
+                              child: Text(newsletter['titulo'] ?? ''),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            )
+          );
+        }
+      }
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -179,10 +286,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              child: SizedBox(
-                width: double.infinity,
-                child: Image.asset("assets/newsletter.png"),
-              ),
+              child: _buildCardStack(),
             ),
           ),
           const SizedBox(height: 5),
