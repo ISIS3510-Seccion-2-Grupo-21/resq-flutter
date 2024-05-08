@@ -88,19 +88,19 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchingPostgres();
     ShakeDetector detector = ShakeDetector.autoStart(
       onPhoneShake: () {
+        _respondedSafe = false;
         _shakeDialog();
         // Do stuff on phone shake
         //wait 10 seconds 
         Future.delayed(const Duration(seconds: 10), () {
-
+          if (!_respondedSafe) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => _chatBlocProvider),
+            );
+          }
         });
 
-        if (!_respondedSafe) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => _chatBlocProvider),
-          );
-        }
       },
       minimumShakeCount: 1,
       shakeSlopTimeMS: 500,
