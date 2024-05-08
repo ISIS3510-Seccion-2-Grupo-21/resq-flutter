@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
@@ -25,6 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
   bool switchValue = true;
   String brigadeStudents = 'There are 0 brigade students available';
   Timer? _dataFetchTimer;
+  bool _respondedSafe = true;
+  final BlocProvider<ChatBloc> _chatBlocProvider = BlocProvider(
+      create: (context) => ChatBloc(
+        chatRepository: FirebaseChatRepository(
+          firestore: FirebaseFirestore.instance,
+          firebaseAuth: FirebaseAuth.instance,
+        ),
+        firebaseAuth: FirebaseAuth.instance,
+      ),
+      child: const ChatScreen(),
+    );
 
   Future<void> fetchingPostgres() async {
     await Supabase.initialize(
@@ -56,7 +68,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    checkConnectivityAndShowMessage();
+
+    
+    Connectivity().onConnectivityChanged.listen((result) {
+      print(result[0] == ConnectivityResult.none);
+      if (result[0] == ConnectivityResult.none) {
+        showNoConnectionMessage();
+      }
+    });
+
     _dataFetchTimer = Timer.periodic(
         const Duration(seconds: 1000), (_) => fetchingPostgres());
     fetchingPostgres();
@@ -64,6 +84,17 @@ class _HomeScreenState extends State<HomeScreen> {
       onPhoneShake: () {
         _shakeDialog();
         // Do stuff on phone shake
+        //wait 10 seconds 
+        Future.delayed(const Duration(seconds: 10), () {
+
+        });
+
+        if (!_respondedSafe) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => _chatBlocProvider),
+          );
+        }
       },
       minimumShakeCount: 1,
       shakeSlopTimeMS: 500,
@@ -75,75 +106,76 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> checkConnectivityAndShowMessage() async {
     bool isConnected = await MyApp.checkInternetConnection();
     if (!isConnected) {
-      showNoConnectionMessage(context);
+      showNoConnectionMessage();
     }
   }
 
-void showNoConnectionMessage(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return Stack(
-        children: [
-          // fondo gris semi-transparente
-          Container(
-            color: Colors.black.withOpacity(0.2), 
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-          ),
-          AlertDialog(
-            backgroundColor: Colors.white,
-            content: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[900]!), 
-              ),
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'No Wi-Fi connection',
-                    style: TextStyle(
-                      color: Colors.grey[900], 
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15.0,
-                    ),
-                  ),
-                  SizedBox(height: 6.0),
-                  Text(
-                    'Connect to Wi-Fi to access all the features of the app from the home screen.',
-                    style: TextStyle(
-                      color: Colors.grey[900], 
-                    ),
-                  ),
-                ],
-              ),
+  Future<void> showNoConnectionMessage() {
+    return showDialog<void>(
+      context: context,
+      builder: (context) {
+        return 
+        Stack(
+          children: [
+            // fondo gris semi-transparente
+            Container(
+              color: Colors.black.withOpacity(0.2), 
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
             ),
-            actions: [
-              TextButton(
-                onPressed:() {
-                  Navigator.pop(context);
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    const Color.fromRGBO(80, 225, 130, 1),
-                  ),
+            AlertDialog(
+              backgroundColor: Colors.white,
+              content: Container(
+                decoration: const BoxDecoration(
+                  // border: Border.all(color: Colors.grey[900]!), 
                 ),
-                child: Text(
-                  'OK',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'No Wi-Fi connection',
+                      style: TextStyle(
+                        color: Colors.grey[900], 
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.0,
+                      ),
+                    ),
+                    SizedBox(height: 6.0),
+                    Text(
+                      'Connect to Wi-Fi to access all the features of the app from the home screen.',
+                      style: TextStyle(
+                        color: Colors.grey[900], 
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ],
-      );
-    },
-  );
-}
+              actions: [
+                TextButton(
+                  onPressed:() {
+                    Navigator.pop(context);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      const Color.fromRGBO(80, 225, 130, 1),
+                    ),
+                  ),
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> _shakeDialog() async {
     return showDialog<void>(
@@ -164,6 +196,7 @@ void showNoConnectionMessage(BuildContext context) {
             TextButton(
               child: const Text('I am ok'),
               onPressed: () {
+                _respondedSafe = true;
                 Navigator.of(context).pop();
               },
             ),
@@ -175,16 +208,6 @@ void showNoConnectionMessage(BuildContext context) {
 
   @override
   Widget build(BuildContext context) {
-    final chatBlocProvider = BlocProvider(
-      create: (context) => ChatBloc(
-        chatRepository: FirebaseChatRepository(
-          firestore: FirebaseFirestore.instance,
-          firebaseAuth: FirebaseAuth.instance,
-        ),
-        firebaseAuth: FirebaseAuth.instance,
-      ),
-      child: const ChatScreen(),
-    );
 
     return Scaffold(
       appBar: AppBar(
@@ -268,7 +291,7 @@ void showNoConnectionMessage(BuildContext context) {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => chatBlocProvider),
+                      MaterialPageRoute(builder: (context) => _chatBlocProvider!),
                     );
                   },
                   style: ButtonStyle(

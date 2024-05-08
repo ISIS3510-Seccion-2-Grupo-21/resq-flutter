@@ -19,6 +19,11 @@ class _OnboardingParentScreenState extends State<OnboardingParentScreen> {
   @override
   void initState() {
     super.initState();
+    Connectivity().onConnectivityChanged.listen((result) {
+      if (result[0] == ConnectivityResult.none) {
+        showNoConnectionMessage();
+      }
+    });
     checkConnectivityAndShowMessage();
 
     _onboardingPages = [
@@ -32,44 +37,61 @@ class _OnboardingParentScreenState extends State<OnboardingParentScreen> {
   Future<void> checkConnectivityAndShowMessage() async {
     bool isConnected = await MyApp.checkInternetConnection();
     if (!isConnected) {
-      showNoConnectionMessage(context);
-      Future.delayed(Duration(seconds: 4), () {
-        Navigator.pop(context); // cierra el mensaje después de 4 segundos
-      });
+      showNoConnectionMessage();
     }
   }
 
-void showNoConnectionMessage(BuildContext context) {
+void showNoConnectionMessage() {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        content: Row(
-          children: [
-            Icon(
-              Icons.wifi,
-              color: Colors.grey[900],
-            ),
-            SizedBox(width: 8),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(3),
-                border: Border.all(color: Colors.grey[900]!),
-                color: Colors.white,
-              ),
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-              child: Text(
-                'You are not connected to a Wi-Fi network',
-                style: TextStyle(color: Colors.grey[900]),
-              ),
-            ),
-          ],
-        ),
+        content: 
+            Row(
+              children: [
+                Icon(
+                  Icons.wifi,
+                  color: Colors.grey[900],
+                ),
+                SizedBox(width: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3),
+                    border: Border.all(color: Colors.grey[900]!),
+                    color: Colors.white,
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  child: Text(
+                    'You have lost connection.',
+                    style: TextStyle(color: Colors.grey[900]),
+                  ),
+                ),
+              ],
+            ), 
+        actions: [
+                TextButton(
+                  onPressed:() {
+                    Navigator.pop(context);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      const Color.fromRGBO(80, 225, 130, 1),
+                    ),
+                  ),
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+        ],
       );
     },
   );
 }
+
 
 
   @override
