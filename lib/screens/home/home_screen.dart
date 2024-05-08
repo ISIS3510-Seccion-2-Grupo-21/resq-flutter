@@ -76,11 +76,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-Future<List<Map<String, dynamic>>> _getNewsletterData() async {
-  final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-      await FirebaseFirestore.instance.collection('newsletter').get();
-  return querySnapshot.docs.map((doc) => doc.data()).toList();
-}
+  Future<List<Map<String, dynamic>>> _getNewsletterData() async {
+    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance.collection('newsletter').get();
+    return querySnapshot.docs.map((doc) => doc.data()).toList();
+  }
 
   Future<void> _shakeDialog() async {
     return showDialog<void>(
@@ -120,8 +120,6 @@ Widget _buildCardStack() {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          print("worlin???");
-          print(snapshot);
           final List<Map<String, dynamic>> data = snapshot.data!;
           int currentIndex = 0; // indice tarjeta superior
 
@@ -180,17 +178,30 @@ Widget _buildCardStack() {
                       },
                       child: Card(
                         color: backgroundColor,
-                        child: Column(
+                        child: Stack(
                           children: [
                             Image.network(newsletter['imagen'] ?? '',
                               width: MediaQuery.of(context).size.width * 0.75,
-                              height: MediaQuery.of(context).size.height * 0.15,
+                              // height: MediaQuery.of(context).size.height * 0.15,
+                              fit: BoxFit.contain,
+                              alignment: Alignment.bottomLeft,
                             ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              color: Colors.grey,
-                              child: Text(newsletter['titulo'] ?? ''),
-                            ),
+                            Positioned(
+                              // bottom: 10,
+                              // right: 10,
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 300,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                  newsletter['titulo'] ?? '',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  )
+                                ),
+                              ),
+                            )
                           ],
                         ),
                       ),
