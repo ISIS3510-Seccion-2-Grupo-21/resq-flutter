@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:newsletter_repository/newsletter_repository.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:resq/blocs/chat_bloc/chat_bloc.dart';
+import 'package:resq/main.dart';
 import 'package:resq/screens/chat/chat_view.dart';
 import 'package:resq/screens/news/news_detail.dart';
 import 'package:resq/screens/home/emergency_form.dart';
@@ -30,6 +32,17 @@ class _HomeScreenState extends State<HomeScreen> {
   bool switchValue = true;
   String brigadeStudents = 'There are 0 brigade students available';
   Timer? _dataFetchTimer;
+  bool _respondedSafe = true;
+  final BlocProvider<ChatBloc> _chatBlocProvider = BlocProvider(
+      create: (context) => ChatBloc(
+        chatRepository: FirebaseChatRepository(
+          firestore: FirebaseFirestore.instance,
+          firebaseAuth: FirebaseAuth.instance,
+        ),
+        firebaseAuth: FirebaseAuth.instance,
+      ),
+      child: const ChatScreen(),
+    );
 
   Future<void> fetchingPostgres() async {
     await Supabase.initialize(
@@ -61,13 +74,33 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    
+    Connectivity().onConnectivityChanged.listen((result) {
+      print(result[0] == ConnectivityResult.none);
+      if (result[0] == ConnectivityResult.none) {
+        showNoConnectionMessage();
+      }
+    });
+
     _dataFetchTimer = Timer.periodic(
         const Duration(seconds: 1000), (_) => fetchingPostgres());
     fetchingPostgres();
     ShakeDetector detector = ShakeDetector.autoStart(
       onPhoneShake: () {
+        _respondedSafe = false;
         _shakeDialog();
         // Do stuff on phone shake
+        //wait 10 seconds 
+        Future.delayed(const Duration(seconds: 10), () {
+          if (!_respondedSafe) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => _chatBlocProvider),
+            );
+          }
+        });
+
       },
       minimumShakeCount: 1,
       shakeSlopTimeMS: 500,
@@ -76,11 +109,84 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-Future<List<Map<String, dynamic>>> _getNewsletterData() async {
-  final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-      await FirebaseFirestore.instance.collection('newsletter').get();
-  return querySnapshot.docs.map((doc) => doc.data()).toList();
-}
+  Future<List<Map<String, dynamic>>> _getNewsletterData() async {
+    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance.collection('newsletter').get();
+    return querySnapshot.docs.map((doc) => doc.data()).toList();
+  }
+  Future<void> checkConnectivityAndShowMessage() async {
+    bool isConnected = await MyApp.checkInternetConnection();
+    if (!isConnected) {
+      showNoConnectionMessage();
+    }
+  }
+
+  Future<void> showNoConnectionMessage() {
+    return showDialog<void>(
+      context: context,
+      builder: (context) {
+        return 
+        Stack(
+          children: [
+            // fondo gris semi-transparente
+            Container(
+              color: Colors.black.withOpacity(0.2), 
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+            ),
+            AlertDialog(
+              backgroundColor: Colors.white,
+              content: Container(
+                decoration: const BoxDecoration(
+                  // border: Border.all(color: Colors.grey[900]!), 
+                ),
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'No Wi-Fi connection',
+                      style: TextStyle(
+                        color: Colors.grey[900], 
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.0,
+                      ),
+                    ),
+                    SizedBox(height: 6.0),
+                    Text(
+                      'Connect to Wi-Fi to access all the features of the app from the home screen.',
+                      style: TextStyle(
+                        color: Colors.grey[900], 
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed:() {
+                    Navigator.pop(context);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      const Color.fromRGBO(80, 225, 130, 1),
+                    ),
+                  ),
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> _shakeDialog() async {
     return showDialog<void>(
@@ -101,6 +207,7 @@ Future<List<Map<String, dynamic>>> _getNewsletterData() async {
             TextButton(
               child: const Text('I am ok'),
               onPressed: () {
+                _respondedSafe = true;
                 Navigator.of(context).pop();
               },
             ),
@@ -120,8 +227,6 @@ Widget _buildCardStack() {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          print("worlin???");
-          print(snapshot);
           final List<Map<String, dynamic>> data = snapshot.data!;
           int currentIndex = 0; // indice tarjeta superior
 
@@ -180,17 +285,30 @@ Widget _buildCardStack() {
                       },
                       child: Card(
                         color: backgroundColor,
-                        child: Column(
+                        child: Stack(
                           children: [
                             Image.network(newsletter['imagen'] ?? '',
                               width: MediaQuery.of(context).size.width * 0.75,
-                              height: MediaQuery.of(context).size.height * 0.15,
+                              // height: MediaQuery.of(context).size.height * 0.15,
+                              fit: BoxFit.contain,
+                              alignment: Alignment.bottomLeft,
                             ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              color: Colors.grey,
-                              child: Text(newsletter['titulo'] ?? ''),
-                            ),
+                            Positioned(
+                              // bottom: 10,
+                              // right: 10,
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 300,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                  newsletter['titulo'] ?? '',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  )
+                                ),
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -208,16 +326,6 @@ Widget _buildCardStack() {
 
   @override
   Widget build(BuildContext context) {
-    final chatBlocProvider = BlocProvider(
-      create: (context) => ChatBloc(
-        chatRepository: FirebaseChatRepository(
-          firestore: FirebaseFirestore.instance,
-          firebaseAuth: FirebaseAuth.instance,
-        ),
-        firebaseAuth: FirebaseAuth.instance,
-      ),
-      child: const ChatScreen(),
-    );
 
     return Scaffold(
       appBar: AppBar(
@@ -298,7 +406,7 @@ Widget _buildCardStack() {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => chatBlocProvider),
+                      MaterialPageRoute(builder: (context) => _chatBlocProvider!),
                     );
                   },
                   style: ButtonStyle(

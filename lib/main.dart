@@ -18,7 +18,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +26,15 @@ class MyApp extends StatelessWidget {
       home: InternetCheckScreen(),
     );
   }
+
+  static Future<bool> checkInternetConnection() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    return connectivityResult != ConnectivityResult.none;
+  }
 }
 
 class InternetCheckScreen extends StatefulWidget {
-  const InternetCheckScreen({super.key});
+  const InternetCheckScreen({Key? key}) : super(key: key);
 
   @override
   _InternetCheckScreenState createState() => _InternetCheckScreenState();
@@ -46,15 +51,15 @@ class _InternetCheckScreenState extends State<InternetCheckScreen> {
     // Listen for changes in connectivity status
     Connectivity().onConnectivityChanged.listen((result) {
       setState(() {
-        _isConnected = result[0] != ConnectivityResult.none;
+        _isConnected = result != ConnectivityResult.none;
       });
     });
   }
 
   Future<void> checkInternetConnection() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
+    var connectivityResult = await Connectivity().checkConnectivity();
     setState(() {
-      _isConnected = connectivityResult[0] != ConnectivityResult.none;
+      _isConnected = connectivityResult != ConnectivityResult.none;
     });
   }
 
