@@ -5,6 +5,7 @@ import 'package:resq/screens/onboarding/onboarding_screen2.dart';
 import 'package:resq/screens/onboarding/onboarding_screen3.dart';
 import 'package:resq/screens/onboarding/final_onboarding_screen.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:resq/screens/onboarding/onboarding_screen4.dart';
 
 class OnboardingParentScreen extends StatefulWidget {
   @override
@@ -30,7 +31,8 @@ class _OnboardingParentScreenState extends State<OnboardingParentScreen> {
       OnboardingScreen1(navigateToNextScreen),
       OnboardingScreen2(navigateToNextScreen),
       OnboardingScreen3(navigateToNextScreen),
-      FinalOnboardingScreen(),
+      OnboardingScreen4(navigateToNextScreen),
+      const FinalOnboardingScreen(),
     ];
   }
 
