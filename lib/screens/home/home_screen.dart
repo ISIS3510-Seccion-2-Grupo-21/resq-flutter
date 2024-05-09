@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:resq/screens/map/map_view.dart';
 
@@ -171,20 +174,43 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 1),
           // Mapa "preview" con GestureDetector
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MapView()),
-              );
-            },
+          Expanded(child: SingleChildScrollView(
             child: Container(
+              alignment: Alignment.topCenter,
               height: MediaQuery.of(context).size.height * 0.25,
-              child: MapView(),
+              child:  GoogleMap(
+                initialCameraPosition: const CameraPosition(
+                  target: LatLng(4.6018, -74.0661),
+                  zoom: 15.0,
+                ),
+                gestureRecognizers: {
+                  Factory<PanGestureRecognizer>(() => PanGestureRecognizer()),
+                  Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()),
+                  Factory<VerticalDragGestureRecognizer>(() => VerticalDragGestureRecognizer())
+                },
+                myLocationEnabled: true,
+                zoomControlsEnabled: false,
+                markers: {
+                  const Marker(
+                    markerId: MarkerId('2'),
+                    position: LatLng(4.6018, -74.0661),
+                    infoWindow: InfoWindow(title: 'ML'),
+                  ),
+                  const Marker(
+                    markerId: MarkerId('3'),
+                    position: LatLng(4.604400872503055, -74.0659650900807),
+                    infoWindow: InfoWindow(title: 'SD'),
+                  ),
+                },
+                onTap: (argument) => Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => MapView()),
+                ),
+              ),
             ),
-          ),
+          )),
         ],
       ),
     );
