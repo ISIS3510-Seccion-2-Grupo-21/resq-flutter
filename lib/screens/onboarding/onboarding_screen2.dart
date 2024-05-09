@@ -32,7 +32,7 @@ class OnboardingScreen2 extends StatelessWidget {
                     'Next',
                     style: TextStyle(
                       fontSize: 20,
-                      color: Colors.grey[300],
+                      color: Colors.green[400],
                     ),
                   ),
                 ),

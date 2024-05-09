@@ -23,7 +23,7 @@ class OnboardingScreen3 extends StatelessWidget {
               child: InkWell(
                 onTap: navigateToNextScreen,
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                     borderRadius: BorderRadius.circular(8),
@@ -32,7 +32,7 @@ class OnboardingScreen3 extends StatelessWidget {
                     'Next',
                     style: TextStyle(
                       fontSize: 20,
-                      color: Colors.grey[300],
+                      color: Colors.green[400],
                     ),
                   ),
                 ),
