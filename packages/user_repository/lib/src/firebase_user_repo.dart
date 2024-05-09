@@ -75,4 +75,28 @@ class FirebaseUserRepo implements UserRepository {
     String downloadUrl = await snapshot.ref.getDownloadURL();
     return downloadUrl;
   }
+
+  @override
+  Future<void> uploadReport(String type, String scope, String description) async {
+    try {
+      if (scope == 'community') {
+        await FirebaseFirestore.instance.collection('reports').add({
+          'type': type,
+          'scope': scope,
+          'user': 'all',
+          'description': description
+        });
+      } else {
+        await FirebaseFirestore.instance.collection('reports').add({
+          'type': type,
+          'scope': scope,
+          'user': FirebaseAuth.instance.currentUser!.uid,
+          'description': description
+        });
+      }
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
 }

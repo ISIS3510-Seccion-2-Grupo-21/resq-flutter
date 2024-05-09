@@ -45,8 +45,19 @@ dependencies:
   google_maps_flutter: ^2.0.10
   geolocator: ^7.7.0
 
+  firebase_storage: ^11.6.10
   user_repository:
     path: packages/user_repository
+  chat_repository:
+    path: packages/chat_repository
+  newsletter_repository:
+    path: packages/newsletter_repository
+  intl: ^0.19.0
+  shake: ^2.2.0
+  card_swiper: ^3.0.0
+  supabase_flutter: ^2.5.1
+  connectivity_plus: ^6.0.3
+  compute: ^1.0.2
 
 dev_dependencies:
   flutter_test:
