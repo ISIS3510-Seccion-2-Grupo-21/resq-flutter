@@ -247,7 +247,7 @@ Widget _buildCardStack() {
             },
             child: Container(
               width: MediaQuery.of(context).size.width * 0.9,
-              height: MediaQuery.of(context).size.height * 0.3, // Incrementa la altura del contenedor
+              height: MediaQuery.of(context).size.height * 0.25, // Incrementa la altura del contenedor
               alignment: Alignment.center,
               child: Stack(
                 alignment: Alignment.center,
@@ -264,7 +264,7 @@ Widget _buildCardStack() {
                   return AnimatedPositioned(
                     duration: Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
-                    top: position * 10.0 + 30.0, // Ajuste adicional para que no se corte la parte superior
+                    top: position * 10.0 + 38.0, // Ajuste adicional para que no se corte la parte superior
                     child: AnimatedContainer(
                       duration: Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
@@ -300,12 +300,12 @@ Widget _buildCardStack() {
                                 ),
                                 Container(
                                   color: backgroundColor,
-                                  padding: const EdgeInsets.all(8),
+                                  padding: const EdgeInsets.all(5),
                                   child: Text(
                                     newsletter['titulo'] ?? '',
                                     style: const TextStyle(
                                       color: Color.fromARGB(255, 26, 26, 26),
-                                      fontSize: 14,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     textAlign: TextAlign.center,
@@ -359,7 +359,7 @@ Widget build(BuildContext context) {
         const SizedBox(height: 0), // Reducción de tamaño del SizedBox
         Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(vertical: 5), // Ajusta el padding vertical para reducir el espacio
+          padding: const EdgeInsets.symmetric(vertical: 10), // Ajusta el padding vertical para reducir el espacio
           child: Container(
             width: MediaQuery.of(context).size.width * 0.75,
             height: 40,
@@ -375,13 +375,13 @@ Widget build(BuildContext context) {
             ),
           ),
         ),
-        const SizedBox(height: 0), // Reducción de tamaño del SizedBox
+        const SizedBox(height: 2), // Reducción de tamaño del SizedBox
         Container(
           width: MediaQuery.of(context).size.width,
           alignment: Alignment.center,
           child: _buildCardStack(),
         ),
-        const SizedBox(height: 0), // Reducción de tamaño del SizedBox
+        const SizedBox(height: 2), // Reducción de tamaño del SizedBox
         Expanded(
           child: SingleChildScrollView(
             child: Container(
