@@ -6,12 +6,16 @@ class Newsletter extends Equatable {
   final String titulo;
   final String imagen;
   final String cuerpo;
+    final String autor;
+      final String fecha;
 
   const Newsletter({
     required this.id,
     required this.titulo,
     required this.imagen,
     required this.cuerpo,
+    required this.autor,
+    required this.fecha,
   });
 
   static var empty = Newsletter(
@@ -19,6 +23,8 @@ class Newsletter extends Equatable {
     titulo: '',
     imagen: '',
     cuerpo: '',
+    autor: '',
+    fecha: '',
   );
 
   Newsletter copyWith({
@@ -26,12 +32,16 @@ class Newsletter extends Equatable {
     String? titulo,
     String? imagen,
     String? cuerpo,
+    String? autor,
+    String? fecha,
   }) {
     return Newsletter(
       id: id ?? this.id,
       titulo: titulo ?? this.titulo,
       imagen: imagen ?? this.imagen,
       cuerpo: cuerpo ?? this.cuerpo,
+      autor: autor ?? this.autor,
+      fecha: fecha ?? this.fecha,
     );
   }
 
@@ -41,6 +51,8 @@ class Newsletter extends Equatable {
       titulo: titulo,
       imagen: imagen,
       cuerpo: cuerpo,
+      autor: autor,
+      fecha: fecha,
     );
   }
 
@@ -50,9 +62,11 @@ class Newsletter extends Equatable {
       titulo: entity.titulo,
       imagen: entity.imagen,
       cuerpo: entity.cuerpo,
+      autor: entity.autor,
+      fecha: entity.fecha,
     );
   }
 
   @override
-  List<Object?> get props => [id, titulo, imagen, cuerpo];
+  List<Object?> get props => [id, titulo, imagen, cuerpo, autor, fecha];
 }

@@ -6,12 +6,16 @@ class NewsletterEntity extends Equatable {
   final String titulo;
   final String imagen;
   final String cuerpo;
+  final String autor;
+  final String fecha;
 
   const NewsletterEntity({
     required this.id,
     required this.titulo,
     required this.imagen,
     required this.cuerpo,
+    required this.autor,
+    required this.fecha,
   });
 
   Map<String, Object?> toDocument() {
@@ -20,6 +24,8 @@ class NewsletterEntity extends Equatable {
       'titulo': titulo,
       'imagen': imagen,
       'cuerpo': cuerpo,
+      'autor': autor,
+      'fecha': fecha,
     };
   }
 
@@ -29,9 +35,11 @@ class NewsletterEntity extends Equatable {
       titulo: doc['titulo'] as String,
       imagen: doc['imagen'] as String,
       cuerpo: doc['cuerpo'] as String,
+      autor: doc['autor'] as String,
+      fecha: doc['fehca'] as String,
     );
   }
 
   @override
-  List<Object?> get props => [id, titulo, imagen, cuerpo];
+  List<Object?> get props => [id, titulo, imagen, cuerpo, autor, fecha];
 }

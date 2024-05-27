@@ -6,10 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:resq/screens/map/map_view.dart';
 import 'dart:async';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:newsletter_repository/newsletter_repository.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:resq/blocs/chat_bloc/chat_bloc.dart';
@@ -31,7 +28,6 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -41,21 +37,22 @@ class _HomeScreenState extends State<HomeScreen> {
   Timer? _dataFetchTimer;
   bool _respondedSafe = true;
   final BlocProvider<ChatBloc> _chatBlocProvider = BlocProvider(
-      create: (context) => ChatBloc(
-        chatRepository: FirebaseChatRepository(
-          firestore: FirebaseFirestore.instance,
-          firebaseAuth: FirebaseAuth.instance,
-        ),
+    create: (context) => ChatBloc(
+      chatRepository: FirebaseChatRepository(
+        firestore: FirebaseFirestore.instance,
         firebaseAuth: FirebaseAuth.instance,
       ),
-      child: const ChatScreen(),
-    );
+      firebaseAuth: FirebaseAuth.instance,
+    ),
+    child: const ChatScreen(),
+  );
 
   Future<void> fetchingPostgres() async {
     await Supabase.initialize(
-        url: 'https://mpmipngzctcklmcjoxgv.supabase.co',
-        anonKey:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wbWlwbmd6Y3Rja2xtY2pveGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTI3NTY2NDcsImV4cCI6MjAyODMzMjY0N30.yfaJIi4YQQnvcRPbtSCsP14xjQW7nPCOGfBTO1oxhZs');
+      url: 'https://mpmipngzctcklmcjoxgv.supabase.co',
+      anonKey:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wbWlwbmd6Y3Rja2xtY2pveGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTI3NTY2NDcsImV4cCI6MjAyODMzMjY0N30.yfaJIi4YQQnvcRPbtSCsP14xjQW7nPCOGfBTO1oxhZs'
+    );
 
     final supabase = Supabase.instance.client;
 
@@ -82,7 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    
     Connectivity().onConnectivityChanged.listen((result) {
       print(result[0] == ConnectivityResult.none);
       if (result[0] == ConnectivityResult.none) {
@@ -91,14 +87,12 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     _dataFetchTimer = Timer.periodic(
-        const Duration(seconds: 1000), (_) => fetchingPostgres());
+      const Duration(seconds: 1000), (_) => fetchingPostgres());
     fetchingPostgres();
     ShakeDetector detector = ShakeDetector.autoStart(
       onPhoneShake: () {
         _respondedSafe = false;
         _shakeDialog();
-        // Do stuff on phone shake
-        //wait 10 seconds 
         Future.delayed(const Duration(seconds: 10), () {
           if (!_respondedSafe) {
             Navigator.push(
@@ -121,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
         await FirebaseFirestore.instance.collection('newsletter').get();
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
+
   Future<void> checkConnectivityAndShowMessage() async {
     bool isConnected = await MyApp.checkInternetConnection();
     if (!isConnected) {
@@ -135,7 +130,6 @@ class _HomeScreenState extends State<HomeScreen> {
         return 
         Stack(
           children: [
-            // fondo gris semi-transparente
             Container(
               color: Colors.black.withOpacity(0.2), 
               width: MediaQuery.of(context).size.width,
@@ -144,9 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
             AlertDialog(
               backgroundColor: Colors.white,
               content: Container(
-                decoration: const BoxDecoration(
-                  // border: Border.all(color: Colors.grey[900]!), 
-                ),
+                decoration: const BoxDecoration(),
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -198,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _shakeDialog() async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Are you ok?'),
@@ -235,88 +227,93 @@ Widget _buildCardStack() {
           return Text('Error: ${snapshot.error}');
         } else {
           final List<Map<String, dynamic>> data = snapshot.data!;
-          int currentIndex = 0; // indice tarjeta superior
+          int currentIndex = 0;
 
           return GestureDetector(
             onVerticalDragUpdate: (details) {
               if (details.primaryDelta! < 0) {
-                // Swipe hacia arriba
                 if (currentIndex < data.length - 1) {
                   setState(() {
-                    currentIndex++; // cambio de tarjeta
+                    currentIndex++;
                   });
                 }
               } else if (details.primaryDelta! > 0) {
-                // Swipe hacia abajo
                 if (currentIndex > 0) {
                   setState(() {
-                    currentIndex--; // tarjeta anterior
+                    currentIndex--;
                   });
                 }
               }
             },
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.75,
-              height: MediaQuery.of(context).size.height * 0.25,
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: MediaQuery.of(context).size.height * 0.25, // Incrementa la altura del contenedor
               alignment: Alignment.center,
               child: Stack(
+                alignment: Alignment.center,
                 children: data.asMap().entries.map((entry) {
                   final index = entry.key;
                   final newsletter = entry.value;
-                  final newsletterId = newsletter['id']; // identificador de la noticia
-                  final position = index - currentIndex;
+                  final newsletterId = newsletter['id'];
+                  final position = currentIndex - index; // Ajustamos la posición para invertir el orden
 
-                  final baseColor = Color.fromARGB(255, 165, 165, 165)!; // base tarjetas
-                  final darkGray = Colors.grey[900]!; // gris oscuro para tarjeta final
-                  // color gradualmente más oscuro según la posición en el stack
-                  final backgroundColor = Color.lerp(baseColor, darkGray, position * 0.1);
+                  final baseColor = Color.fromARGB(255, 167, 167, 167);
+                  final darkGray = Color.fromARGB(255, 42, 42, 42);
+                  final backgroundColor = Color.lerp(darkGray, baseColor, 1 - position * 0.13);
 
                   return AnimatedPositioned(
                     duration: Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
-                    top: MediaQuery.of(context).size.height * 0.1 * position,
-                    child: GestureDetector(
-                      onTap: () {
-                        final newsletterRepository = FirebaseNewsletterRepository(
-                          firestore: FirebaseFirestore.instance,
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NewsDetailScreen(
-                              newsletterId: newsletterId,
-                              newsletterRepository: newsletterRepository,
+                    top: position * 10.0 + 38.0, // Ajuste adicional para que no se corte la parte superior
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: GestureDetector(
+                        onTap: () {
+                          final newsletterRepository = FirebaseNewsletterRepository(
+                            firestore: FirebaseFirestore.instance,
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NewsDetailScreen(
+                                newsletterId: newsletterId,
+                                newsletterRepository: newsletterRepository,
+                              ),
+                            ),
+                          );  
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          elevation: 8,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Image.network(newsletter['imagen'] ?? '',
+                                  height: MediaQuery.of(context).size.height * 0.15,
+                                  fit: BoxFit.cover,
+                                ),
+                                Container(
+                                  color: backgroundColor,
+                                  padding: const EdgeInsets.all(5),
+                                  child: Text(
+                                    newsletter['titulo'] ?? '',
+                                    style: const TextStyle(
+                                      color: Color.fromARGB(255, 26, 26, 26),
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        );  
-                      },
-                      child: Card(
-                        color: backgroundColor,
-                        child: Stack(
-                          children: [
-                            Image.network(newsletter['imagen'] ?? '',
-                              width: MediaQuery.of(context).size.width * 0.75,
-                              // height: MediaQuery.of(context).size.height * 0.15,
-                              fit: BoxFit.contain,
-                              alignment: Alignment.bottomLeft,
-                            ),
-                            Positioned(
-                              // bottom: 10,
-                              // right: 10,
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: 300,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                  newsletter['titulo'] ?? '',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  )
-                                ),
-                              ),
-                            )
-                          ],
                         ),
                       ),
                     ),
@@ -331,200 +328,197 @@ Widget _buildCardStack() {
   );
 }
 
-  @override
-  Widget build(BuildContext context) {
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          brigadeStudents,
-          style: TextStyle(fontSize: 12),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.read<SignInBloc>().add(const SignOutRequired());
-            },
-            icon: const Icon(Icons.login),
-          ),
-        ],
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(
+        brigadeStudents,
+        style: TextStyle(fontSize: 12),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 1),
-          Divider(
-            color: Colors.grey[300],
-            thickness: 1,
-            indent: MediaQuery.of(context).size.width * 0.08,
-            endIndent: MediaQuery.of(context).size.width * 0.08,
+      actions: [
+        IconButton(
+          onPressed: () {
+            context.read<SignInBloc>().add(const SignOutRequired());
+          },
+          icon: const Icon(Icons.login),
+        ),
+      ],
+    ),
+    body: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 0), // Reducción de tamaño del SizedBox
+        Divider(
+          color: Colors.grey[300],
+          thickness: 1,
+          indent: MediaQuery.of(context).size.width * 0.08,
+          endIndent: MediaQuery.of(context).size.width * 0.08,
+        ),
+        const SizedBox(height: 0), // Reducción de tamaño del SizedBox
+        Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(vertical: 10), // Ajusta el padding vertical para reducir el espacio
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.75,
+            height: 40,
+            decoration: BoxDecoration(
+              color: const Color.fromRGBO(232, 232, 232, 1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Center(
+              child: Text(
+                'Universidad de Los Andes Homepage',
+                style: TextStyle(color: Colors.black, fontSize: 15),
+              ),
+            ),
           ),
-          const SizedBox(height: 5),
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(vertical: 10),
+        ),
+        const SizedBox(height: 2), // Reducción de tamaño del SizedBox
+        Container(
+          width: MediaQuery.of(context).size.width,
+          alignment: Alignment.center,
+          child: _buildCardStack(),
+        ),
+        const SizedBox(height: 2), // Reducción de tamaño del SizedBox
+        Expanded(
+          child: SingleChildScrollView(
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.75,
-              height: 40,
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(232, 232, 232, 1),
-                borderRadius: BorderRadius.circular(10),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  const SizedBox(height: 5), // Reducción del espacio
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6, // Ajuste del ancho de los botones
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => _chatBlocProvider!),
+                        );
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color.fromRGBO(80, 225, 130, 1),
+                        ),
+                        shape: MaterialStateProperty.all<OutlinedBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        'Contact the student brigade',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5), // Ajuste del espacio entre botones
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6, // Ajuste del ancho de los botones
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color.fromRGBO(80, 225, 130, 1),
+                        ),
+                        shape: MaterialStateProperty.all<OutlinedBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        'Report MAAD case',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5), // Ajuste del espacio entre botones
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6, // Ajuste del ancho de los botones
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color.fromRGBO(80, 225, 130, 1),
+                        ),
+                        shape: MaterialStateProperty.all<OutlinedBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        'Safety tips on campus',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5), // Ajuste del espacio entre botones
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6, // Ajuste del ancho de los botones
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return const EmergencyForm();
+                            });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color.fromRGBO(80, 225, 130, 1),
+                        ),
+                        shape: MaterialStateProperty.all<OutlinedBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        'Report emergency',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              child: const Center(
-                child: Text(
-                  'Universidad de Los Andes Homepage',
-                  style: TextStyle(color: Colors.black, fontSize: 15),
-                ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 0),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Activate alerts',
+                style: TextStyle(color: Colors.black, fontSize: 14),
               ),
-            ),
-          ),
-          const SizedBox(height: 5),
-          // Establecer navegación a newsletter
-          Container(
-            width: MediaQuery.of(context).size.width * 0.18,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  Colors.transparent,
-                ),
-                overlayColor: MaterialStateProperty.all<Color>(
-                  Colors.transparent,
-                ),
-                elevation: MaterialStateProperty.all(0),
-                shadowColor: MaterialStateProperty.all<Color>(
-                  Colors.transparent,
-                ),
-                shape: MaterialStateProperty.all<OutlinedBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+              const SizedBox(width: 10),
+              Switch(
+                value: switchValue,
+                onChanged: (value) {
+                  setState(() {
+                    switchValue = value;
+                  });
+                },
+                activeColor: Colors.green,
+                inactiveThumbColor: Colors.grey,
               ),
-              child: _buildCardStack(),
-            ),
+            ],
           ),
-          const SizedBox(height: 5),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => _chatBlocProvider!),
-                    );
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      const Color.fromRGBO(80, 225, 130, 1),
-                    ),
-                    shape: MaterialStateProperty.all<OutlinedBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  child: const Text(
-                    'Contact the student brigade',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      const Color.fromRGBO(80, 225, 130, 1),
-                    ),
-                    shape: MaterialStateProperty.all<OutlinedBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  child: const Text(
-                    'Report MAAD case',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      const Color.fromRGBO(80, 225, 130, 1),
-                    ),
-                    shape: MaterialStateProperty.all<OutlinedBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  child: const Text(
-                    'Safety tips on campus',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const EmergencyForm();
-                        });
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      const Color.fromRGBO(80, 225, 130, 1),
-                    ),
-                    shape: MaterialStateProperty.all<OutlinedBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  child: const Text(
-                    'Report emergency',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 5),
-          // Switch - Falta funcionalidad
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Activate alerts',
-                  style: TextStyle(color: Colors.black, fontSize: 14),
-                ),
-                const SizedBox(width: 10),
-                Switch(
-                  value: switchValue,
-                  onChanged: (value) {
-                    setState(() {
-                      switchValue = value;
-                    });
-                  },
-                  activeColor: Colors.green,
-                  inactiveThumbColor: Colors.grey,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 1),
-          // Mapa "preview" con GestureDetector
-          Expanded(child: SingleChildScrollView(
+        ),
+        const SizedBox(height: 0),
+        Expanded(
+          child: SingleChildScrollView(
             child: Container(
               alignment: Alignment.topCenter,
-              height: MediaQuery.of(context).size.height * 0.25,
-              child:  GoogleMap(
+              height: MediaQuery.of(context).size.height * 0.28,
+              child: GoogleMap(
                 initialCameraPosition: const CameraPosition(
                   target: LatLng(4.6018, -74.0661),
                   zoom: 15.0,
@@ -549,14 +543,16 @@ Widget _buildCardStack() {
                   ),
                 },
                 onTap: (argument) => Navigator.push(
-                  context, 
+                  context,
                   MaterialPageRoute(builder: (context) => MapView()),
                 ),
               ),
             ),
-          )),
-        ],
-      ),
-    );
-  }
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 }
