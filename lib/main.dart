@@ -3,8 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:resq/firebase_options.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:resq/screens/map/map_view.dart';
 import 'package:resq/screens/auth/login_process.dart';
 import 'package:user_repository/user_repository.dart';
 
