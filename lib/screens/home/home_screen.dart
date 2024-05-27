@@ -14,6 +14,7 @@ import 'package:resq/main.dart';
 import 'package:resq/screens/chat/chat_view.dart';
 import 'package:resq/screens/news/news_detail.dart';
 import 'package:resq/screens/home/emergency_form.dart';
+import 'package:resq/screens/settings/settings_view.dart';
 import 'package:shake/shake.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chat_repository/chat_repository.dart';
@@ -341,10 +342,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              context.read<SignInBloc>().add(const SignOutRequired());
+            onPressed: () async {
+              var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsView()));
+              if (result == 'logout') {
+                context.read<SignInBloc>().add(const SignOutRequired());
+              }
             },
-            icon: const Icon(Icons.login),
+            icon: const Icon(Icons.settings),
           ),
         ],
       ),
