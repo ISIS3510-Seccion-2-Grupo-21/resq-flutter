@@ -227,107 +227,78 @@ Widget _buildCardStack() {
           return Text('Error: ${snapshot.error}');
         } else {
           final List<Map<String, dynamic>> data = snapshot.data!;
-          int currentIndex = 0;
 
-          return GestureDetector(
-            onVerticalDragUpdate: (details) {
-              if (details.primaryDelta! < 0) {
-                if (currentIndex < data.length - 1) {
-                  setState(() {
-                    currentIndex++;
-                  });
-                }
-              } else if (details.primaryDelta! > 0) {
-                if (currentIndex > 0) {
-                  setState(() {
-                    currentIndex--;
-                  });
-                }
-              }
-            },
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              height: MediaQuery.of(context).size.height * 0.25, // Incrementa la altura del contenedor
-              alignment: Alignment.center,
-              child: Stack(
-                alignment: Alignment.center,
-                children: data.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final newsletter = entry.value;
-                  final newsletterId = newsletter['id'];
-                  final position = currentIndex - index; // Ajustamos la posición para invertir el orden
+          return Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.29, // Adjust height as needed
+            child: Swiper(
+              itemCount: data.length,
+              itemBuilder: (BuildContext context, int index) {
+                final newsletter = data[index];
+                final newsletterId = newsletter['id'];
 
-                  final baseColor = Color.fromARGB(255, 167, 167, 167);
-                  final darkGray = Color.fromARGB(255, 42, 42, 42);
-                  final backgroundColor = Color.lerp(darkGray, baseColor, 1 - position * 0.13);
+                final backgroundColor = Color.fromARGB(255, 189, 189, 189);
 
-                  return AnimatedPositioned(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    top: position * 10.0 + 38.0, // Ajuste adicional para que no se corte la parte superior
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      child: GestureDetector(
-                        onTap: () {
-                          final newsletterRepository = FirebaseNewsletterRepository(
-                            firestore: FirebaseFirestore.instance,
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NewsDetailScreen(
-                                newsletterId: newsletterId,
-                                newsletterRepository: newsletterRepository,
-                              ),
-                            ),
-                          );  
-                        },
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          elevation: 8,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Image.network(newsletter['imagen'] ?? '',
-                                  height: MediaQuery.of(context).size.height * 0.15,
-                                  fit: BoxFit.cover,
-                                ),
-                                Container(
-                                  color: backgroundColor,
-                                  padding: const EdgeInsets.all(5),
-                                  child: Text(
-                                    newsletter['titulo'] ?? '',
-                                    style: const TextStyle(
-                                      color: Color.fromARGB(255, 26, 26, 26),
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                return GestureDetector(
+                  onTap: () {
+                    final newsletterRepository = FirebaseNewsletterRepository(
+                      firestore: FirebaseFirestore.instance,
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NewsDetailScreen(
+                          newsletterId: newsletterId,
+                          newsletterRepository: newsletterRepository,
                         ),
                       ),
+                    );
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                  );
-                }).toList(),
-              ),
-            )
+                    elevation: 8,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Image.network(
+                            newsletter['imagen'] ?? '',
+                            height: MediaQuery.of(context).size.height * 0.2, // Adjust height as needed
+                            fit: BoxFit.cover,
+                          ),
+                          Container(
+                            color: backgroundColor,
+                            padding: const EdgeInsets.all(8.75),
+                            child: Text(
+                              newsletter['titulo'] ?? '',
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 26, 26, 26),
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              scrollDirection: Axis.vertical,
+              layout: SwiperLayout.STACK,
+              itemWidth: MediaQuery.of(context).size.width * 0.8,
+              itemHeight: MediaQuery.of(context).size.height * 0.25, // Adjust height as needed
+            ),
           );
         }
       }
     },
   );
 }
-
 
 @override
 Widget build(BuildContext context) {
