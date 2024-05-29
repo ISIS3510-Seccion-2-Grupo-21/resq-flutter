@@ -230,7 +230,7 @@ Widget _buildCardStack() {
 
           return Container(
             width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.29,
+            height: MediaQuery.of(context).size.height * 0.29, // Adjust height as needed
             child: Swiper(
               itemCount: data.length,
               itemBuilder: (BuildContext context, int index) {
@@ -266,7 +266,7 @@ Widget _buildCardStack() {
                         children: [
                           Image.network(
                             newsletter['imagen'] ?? '',
-                            height: MediaQuery.of(context).size.height * 0.2,
+                            height: MediaQuery.of(context).size.height * 0.2, // Adjust height as needed
                             fit: BoxFit.cover,
                           ),
                           Container(
@@ -291,7 +291,7 @@ Widget _buildCardStack() {
               scrollDirection: Axis.vertical,
               layout: SwiperLayout.STACK,
               itemWidth: MediaQuery.of(context).size.width * 0.8,
-              itemHeight: MediaQuery.of(context).size.height * 0.25,
+              itemHeight: MediaQuery.of(context).size.height * 0.25, // Adjust height as needed
             ),
           );
         }
@@ -320,17 +320,17 @@ Widget build(BuildContext context) {
     body: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 0), 
+        const SizedBox(height: 0), // Reducción de tamaño del SizedBox
         Divider(
           color: Colors.grey[300],
           thickness: 1,
           indent: MediaQuery.of(context).size.width * 0.08,
           endIndent: MediaQuery.of(context).size.width * 0.08,
         ),
-        const SizedBox(height: 0), 
+        const SizedBox(height: 0), // Reducción de tamaño del SizedBox
         Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(vertical: 10), 
+          padding: const EdgeInsets.symmetric(vertical: 10), // Ajusta el padding vertical para reducir el espacio
           child: Container(
             width: MediaQuery.of(context).size.width * 0.75,
             height: 40,
@@ -346,22 +346,22 @@ Widget build(BuildContext context) {
             ),
           ),
         ),
-        const SizedBox(height: 2), 
+        const SizedBox(height: 2), // Reducción de tamaño del SizedBox
         Container(
           width: MediaQuery.of(context).size.width,
           alignment: Alignment.center,
           child: _buildCardStack(),
         ),
-        const SizedBox(height: 2), 
+        const SizedBox(height: 2), // Reducción de tamaño del SizedBox
         Expanded(
           child: SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  const SizedBox(height: 5), 
+                  const SizedBox(height: 5), // Reducción del espacio
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6, 
+                    width: MediaQuery.of(context).size.width * 0.6, // Ajuste del ancho de los botones
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -385,9 +385,9 @@ Widget build(BuildContext context) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 5), 
+                  const SizedBox(height: 5), // Ajuste del espacio entre botones
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6, 
+                    width: MediaQuery.of(context).size.width * 0.6, // Ajuste del ancho de los botones
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ButtonStyle(
@@ -406,9 +406,9 @@ Widget build(BuildContext context) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 5), 
+                  const SizedBox(height: 5), // Ajuste del espacio entre botones
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6, 
+                    width: MediaQuery.of(context).size.width * 0.6, // Ajuste del ancho de los botones
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ButtonStyle(
@@ -427,9 +427,9 @@ Widget build(BuildContext context) {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 5), 
+                  const SizedBox(height: 5), // Ajuste del espacio entre botones
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6, 
+                    width: MediaQuery.of(context).size.width * 0.6, // Ajuste del ancho de los botones
                     child: ElevatedButton(
                       onPressed: () {
                         showDialog(
