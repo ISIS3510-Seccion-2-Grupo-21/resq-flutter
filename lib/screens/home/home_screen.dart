@@ -14,6 +14,7 @@ import 'package:resq/main.dart';
 import 'package:resq/screens/chat/chat_view.dart';
 import 'package:resq/screens/news/news_detail.dart';
 import 'package:resq/screens/home/emergency_form.dart';
+import 'package:resq/screens/safetytips/safety_tips_screen.dart';
 import 'package:shake/shake.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chat_repository/chat_repository.dart';
@@ -230,7 +231,7 @@ Widget _buildCardStack() {
 
           return Container(
             width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.29, // Adjust height as needed
+            height: MediaQuery.of(context).size.height * 0.29, 
             child: Swiper(
               itemCount: data.length,
               itemBuilder: (BuildContext context, int index) {
@@ -266,7 +267,7 @@ Widget _buildCardStack() {
                         children: [
                           Image.network(
                             newsletter['imagen'] ?? '',
-                            height: MediaQuery.of(context).size.height * 0.2, // Adjust height as needed
+                            height: MediaQuery.of(context).size.height * 0.2, 
                             fit: BoxFit.cover,
                           ),
                           Container(
@@ -291,7 +292,7 @@ Widget _buildCardStack() {
               scrollDirection: Axis.vertical,
               layout: SwiperLayout.STACK,
               itemWidth: MediaQuery.of(context).size.width * 0.8,
-              itemHeight: MediaQuery.of(context).size.height * 0.25, // Adjust height as needed
+              itemHeight: MediaQuery.of(context).size.height * 0.25, 
             ),
           );
         }
@@ -301,229 +302,234 @@ Widget _buildCardStack() {
 }
 
 @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text(
-        brigadeStudents,
-        style: TextStyle(fontSize: 12),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          brigadeStudents,
+          style: TextStyle(fontSize: 12),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<SignInBloc>().add(const SignOutRequired());
+            },
+            icon: const Icon(Icons.login),
+          ),
+        ],
       ),
-      actions: [
-        IconButton(
-          onPressed: () {
-            context.read<SignInBloc>().add(const SignOutRequired());
-          },
-          icon: const Icon(Icons.login),
-        ),
-      ],
-    ),
-    body: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: 0), // Reducción de tamaño del SizedBox
-        Divider(
-          color: Colors.grey[300],
-          thickness: 1,
-          indent: MediaQuery.of(context).size.width * 0.08,
-          endIndent: MediaQuery.of(context).size.width * 0.08,
-        ),
-        const SizedBox(height: 0), // Reducción de tamaño del SizedBox
-        Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(vertical: 10), // Ajusta el padding vertical para reducir el espacio
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.75,
-            height: 40,
-            decoration: BoxDecoration(
-              color: const Color.fromRGBO(232, 232, 232, 1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Center(
-              child: Text(
-                'Universidad de Los Andes Homepage',
-                style: TextStyle(color: Colors.black, fontSize: 15),
-              ),
-            ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 0), 
+          Divider(
+            color: Colors.grey[300],
+            thickness: 1,
+            indent: MediaQuery.of(context).size.width * 0.08,
+            endIndent: MediaQuery.of(context).size.width * 0.08,
           ),
-        ),
-        const SizedBox(height: 2), // Reducción de tamaño del SizedBox
-        Container(
-          width: MediaQuery.of(context).size.width,
-          alignment: Alignment.center,
-          child: _buildCardStack(),
-        ),
-        const SizedBox(height: 2), // Reducción de tamaño del SizedBox
-        Expanded(
-          child: SingleChildScrollView(
+          const SizedBox(height: 0), 
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(vertical: 10), 
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  const SizedBox(height: 5), // Reducción del espacio
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6, // Ajuste del ancho de los botones
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => _chatBlocProvider!),
-                        );
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromRGBO(80, 225, 130, 1),
-                        ),
-                        shape: MaterialStateProperty.all<OutlinedBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      child: const Text(
-                        'Contact the student brigade',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 5), // Ajuste del espacio entre botones
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6, // Ajuste del ancho de los botones
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromRGBO(80, 225, 130, 1),
-                        ),
-                        shape: MaterialStateProperty.all<OutlinedBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      child: const Text(
-                        'Report MAAD case',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 5), // Ajuste del espacio entre botones
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6, // Ajuste del ancho de los botones
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromRGBO(80, 225, 130, 1),
-                        ),
-                        shape: MaterialStateProperty.all<OutlinedBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      child: const Text(
-                        'Safety tips on campus',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 5), // Ajuste del espacio entre botones
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6, // Ajuste del ancho de los botones
-                    child: ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return const EmergencyForm();
-                            });
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromRGBO(80, 225, 130, 1),
-                        ),
-                        shape: MaterialStateProperty.all<OutlinedBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      child: const Text(
-                        'Report emergency',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
+              width: MediaQuery.of(context).size.width * 0.75,
+              height: 40,
+              decoration: BoxDecoration(
+                color: const Color.fromRGBO(232, 232, 232, 1),
+                borderRadius: BorderRadius.circular(10),
               ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 0),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Activate alerts',
-                style: TextStyle(color: Colors.black, fontSize: 14),
-              ),
-              const SizedBox(width: 10),
-              Switch(
-                value: switchValue,
-                onChanged: (value) {
-                  setState(() {
-                    switchValue = value;
-                  });
-                },
-                activeColor: Colors.green,
-                inactiveThumbColor: Colors.grey,
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 0),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Container(
-              alignment: Alignment.topCenter,
-              height: MediaQuery.of(context).size.height * 0.28,
-              child: GoogleMap(
-                initialCameraPosition: const CameraPosition(
-                  target: LatLng(4.6018, -74.0661),
-                  zoom: 15.0,
-                ),
-                gestureRecognizers: {
-                  Factory<PanGestureRecognizer>(() => PanGestureRecognizer()),
-                  Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()),
-                  Factory<VerticalDragGestureRecognizer>(() => VerticalDragGestureRecognizer())
-                },
-                myLocationEnabled: true,
-                zoomControlsEnabled: false,
-                markers: {
-                  const Marker(
-                    markerId: MarkerId('2'),
-                    position: LatLng(4.6018, -74.0661),
-                    infoWindow: InfoWindow(title: 'ML'),
-                  ),
-                  const Marker(
-                    markerId: MarkerId('3'),
-                    position: LatLng(4.604400872503055, -74.0659650900807),
-                    infoWindow: InfoWindow(title: 'SD'),
-                  ),
-                },
-                onTap: (argument) => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MapView()),
+              child: const Center(
+                child: Text(
+                  'Universidad de Los Andes Homepage',
+                  style: TextStyle(color: Colors.black, fontSize: 15),
                 ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+          const SizedBox(height: 2), 
+          Container(
+            width: MediaQuery.of(context).size.width,
+            alignment: Alignment.center,
+            child: _buildCardStack(),
+          ),
+          const SizedBox(height: 2), 
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 5), 
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.6, 
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => _chatBlocProvider!),
+                          );
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromRGBO(80, 225, 130, 1),
+                          ),
+                          shape: MaterialStateProperty.all<OutlinedBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          'Contact the student brigade',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 5), 
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.6, 
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromRGBO(80, 225, 130, 1),
+                          ),
+                          shape: MaterialStateProperty.all<OutlinedBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          'Report MAAD case',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 5), 
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.6, 
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SafetyTipsScreen()),
+                          );
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromRGBO(80, 225, 130, 1),
+                          ),
+                          shape: MaterialStateProperty.all<OutlinedBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          'Safety tips on campus',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 5), 
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.6, 
+                      child: ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const EmergencyForm();
+                              });
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromRGBO(80, 225, 130, 1),
+                          ),
+                          shape: MaterialStateProperty.all<OutlinedBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          'Report emergency',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Activate alerts',
+                  style: TextStyle(color: Colors.black, fontSize: 14),
+                ),
+                const SizedBox(width: 10),
+                Switch(
+                  value: switchValue,
+                  onChanged: (value) {
+                    setState(() {
+                      switchValue = value;
+                    });
+                  },
+                  activeColor: Colors.green,
+                  inactiveThumbColor: Colors.grey,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 0),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                alignment: Alignment.topCenter,
+                height: MediaQuery.of(context).size.height * 0.28,
+                child: GoogleMap(
+                  initialCameraPosition: const CameraPosition(
+                    target: LatLng(4.6018, -74.0661),
+                    zoom: 15.0,
+                  ),
+                  gestureRecognizers: {
+                    Factory<PanGestureRecognizer>(() => PanGestureRecognizer()),
+                    Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()),
+                    Factory<VerticalDragGestureRecognizer>(() => VerticalDragGestureRecognizer())
+                  },
+                  myLocationEnabled: true,
+                  zoomControlsEnabled: false,
+                  markers: {
+                    const Marker(
+                      markerId: MarkerId('2'),
+                      position: LatLng(4.6018, -74.0661),
+                      infoWindow: InfoWindow(title: 'ML'),
+                    ),
+                    const Marker(
+                      markerId: MarkerId('3'),
+                      position: LatLng(4.604400872503055, -74.0659650900807),
+                      infoWindow: InfoWindow(title: 'SD'),
+                    ),
+                  },
+                  onTap: (argument) => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MapView()),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
 }
