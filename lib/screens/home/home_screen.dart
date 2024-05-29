@@ -49,10 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchingPostgres() async {
     await Supabase.initialize(
-      url: 'https://mpmipngzctcklmcjoxgv.supabase.co',
-      anonKey:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wbWlwbmd6Y3Rja2xtY2pveGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTI3NTY2NDcsImV4cCI6MjAyODMzMjY0N30.yfaJIi4YQQnvcRPbtSCsP14xjQW7nPCOGfBTO1oxhZs'
-    );
+        url: 'https://mpmipngzctcklmcjoxgv.supabase.co',
+        anonKey:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wbWlwbmd6Y3Rja2xtY2pveGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTI3NTY2NDcsImV4cCI6MjAyODMzMjY0N30.yfaJIi4YQQnvcRPbtSCsP14xjQW7nPCOGfBTO1oxhZs');
 
     final supabase = Supabase.instance.client;
 
@@ -87,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     _dataFetchTimer = Timer.periodic(
-      const Duration(seconds: 1000), (_) => fetchingPostgres());
+        const Duration(seconds: 1000), (_) => fetchingPostgres());
     fetchingPostgres();
     ShakeDetector detector = ShakeDetector.autoStart(
       onPhoneShake: () {
@@ -101,7 +100,6 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }
         });
-
       },
       minimumShakeCount: 1,
       shakeSlopTimeMS: 500,
@@ -127,11 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return showDialog<void>(
       context: context,
       builder: (context) {
-        return 
-        Stack(
+        return Stack(
           children: [
             Container(
-              color: Colors.black.withOpacity(0.2), 
+              color: Colors.black.withOpacity(0.2),
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
             ),
@@ -147,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       'No Wi-Fi connection',
                       style: TextStyle(
-                        color: Colors.grey[900], 
+                        color: Colors.grey[900],
                         fontWeight: FontWeight.bold,
                         fontSize: 15.0,
                       ),
@@ -156,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       'Connect to Wi-Fi to access all the features of the app from the home screen.',
                       style: TextStyle(
-                        color: Colors.grey[900], 
+                        color: Colors.grey[900],
                       ),
                     ),
                   ],
@@ -164,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               actions: [
                 TextButton(
-                  onPressed:() {
+                  onPressed: () {
                     Navigator.pop(context);
                   },
                   style: ButtonStyle(
@@ -216,91 +213,90 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-Widget _buildCardStack() {
-  return FutureBuilder<List<Map<String, dynamic>>>(
-    future: _getNewsletterData(),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return CircularProgressIndicator();
-      } else {
-        if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+  Widget _buildCardStack() {
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: _getNewsletterData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
         } else {
-          final List<Map<String, dynamic>> data = snapshot.data!;
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            final List<Map<String, dynamic>> data = snapshot.data!;
 
-          return Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.29, 
-            child: Swiper(
-              itemCount: data.length,
-              itemBuilder: (BuildContext context, int index) {
-                final newsletter = data[index];
-                final newsletterId = newsletter['id'];
+            return Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: MediaQuery.of(context).size.height * 0.24,
+              child: Swiper(
+                itemCount: data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final newsletter = data[index];
+                  final newsletterId = newsletter['id'];
 
-                final backgroundColor = Color.fromARGB(255, 189, 189, 189);
+                  final backgroundColor = Color.fromARGB(255, 189, 189, 189);
 
-                return GestureDetector(
-                  onTap: () {
-                    final newsletterRepository = FirebaseNewsletterRepository(
-                      firestore: FirebaseFirestore.instance,
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NewsDetailScreen(
-                          newsletterId: newsletterId,
-                          newsletterRepository: newsletterRepository,
+                  return GestureDetector(
+                    onTap: () {
+                      final newsletterRepository = FirebaseNewsletterRepository(
+                        firestore: FirebaseFirestore.instance,
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NewsDetailScreen(
+                            newsletterId: newsletterId,
+                            newsletterRepository: newsletterRepository,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 8,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Image.network(
+                              newsletter['imagen'] ?? '',
+                              height: MediaQuery.of(context).size.height * 0.15,
+                              fit: BoxFit.cover,
+                            ),
+                            Container(
+                              color: backgroundColor,
+                              padding: const EdgeInsets.all(8.75),
+                              child: Text(
+                                newsletter['titulo'] ?? '',
+                                style: const TextStyle(
+                                  color: Color.fromARGB(255, 26, 26, 26),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
                     ),
-                    elevation: 8,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Image.network(
-                            newsletter['imagen'] ?? '',
-                            height: MediaQuery.of(context).size.height * 0.2, 
-                            fit: BoxFit.cover,
-                          ),
-                          Container(
-                            color: backgroundColor,
-                            padding: const EdgeInsets.all(8.75),
-                            child: Text(
-                              newsletter['titulo'] ?? '',
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 26, 26, 26),
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-              scrollDirection: Axis.vertical,
-              layout: SwiperLayout.STACK,
-              itemWidth: MediaQuery.of(context).size.width * 0.8,
-              itemHeight: MediaQuery.of(context).size.height * 0.25, 
-            ),
-          );
+                  );
+                },
+                scrollDirection: Axis.vertical,
+                layout: SwiperLayout.STACK,
+                itemWidth: MediaQuery.of(context).size.width * 0.75,
+                itemHeight: MediaQuery.of(context).size.height * 0.20659,
+              ),
+            );
+          }
         }
-      }
-    },
-  );
-}
+      },
+    );
+  }
 
-@override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -312,7 +308,8 @@ Widget _buildCardStack() {
         actions: [
           IconButton(
             onPressed: () async {
-              var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsView()));
+              var result = await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsView()));
               if (result == 'logout') {
                 context.read<SignInBloc>().add(const SignOutRequired());
               }
@@ -320,21 +317,21 @@ Widget _buildCardStack() {
             icon: const Icon(Icons.settings),
           ),
         ],
-    ),
-    body: Column(
+      ),
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 0), 
+          const SizedBox(height: 0),
           Divider(
             color: Colors.grey[300],
             thickness: 1,
             indent: MediaQuery.of(context).size.width * 0.08,
             endIndent: MediaQuery.of(context).size.width * 0.08,
           ),
-          const SizedBox(height: 0), 
+          const SizedBox(height: 0),
           Container(
             alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(vertical: 10), 
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Container(
               width: MediaQuery.of(context).size.width * 0.75,
               height: 40,
@@ -350,27 +347,29 @@ Widget _buildCardStack() {
               ),
             ),
           ),
-          const SizedBox(height: 2), 
+          const SizedBox(height: 2),
           Container(
             width: MediaQuery.of(context).size.width,
             alignment: Alignment.center,
             child: _buildCardStack(),
           ),
-          const SizedBox(height: 2), 
+          const SizedBox(height: 2),
           Expanded(
             child: SingleChildScrollView(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    const SizedBox(height: 5), 
+                    const SizedBox(height: 5),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.6, 
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: 38,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => _chatBlocProvider!),
+                            MaterialPageRoute(
+                                builder: (context) => _chatBlocProvider!),
                           );
                         },
                         style: ButtonStyle(
@@ -389,24 +388,25 @@ Widget _buildCardStack() {
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 5), 
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6, 
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
+                    const SizedBox(height: 5),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: 38,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => MaadWidget()));
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromRGBO(80, 225, 130, 1),
-                        ),
-                        shape: MaterialStateProperty.all<OutlinedBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromRGBO(80, 225, 130, 1),
+                          ),
+                          shape: MaterialStateProperty.all<OutlinedBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                         ),
                         child: const Text(
@@ -415,14 +415,15 @@ Widget _buildCardStack() {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 5), 
+                    const SizedBox(height: 5),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.6, 
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: 38,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => SafetyTipsScreen()),
+                            MaterialPageRoute(builder: (context) => SafetyTipsScreen())
                           );
                         },
                         style: ButtonStyle(
@@ -441,9 +442,10 @@ Widget _buildCardStack() {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 5), 
+                    const SizedBox(height: 5),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.6, 
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: 38,
                       child: ElevatedButton(
                         onPressed: () {
                           showDialog(
@@ -510,8 +512,10 @@ Widget _buildCardStack() {
                   ),
                   gestureRecognizers: {
                     Factory<PanGestureRecognizer>(() => PanGestureRecognizer()),
-                    Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()),
-                    Factory<VerticalDragGestureRecognizer>(() => VerticalDragGestureRecognizer())
+                    Factory<ScaleGestureRecognizer>(
+                        () => ScaleGestureRecognizer()),
+                    Factory<VerticalDragGestureRecognizer>(
+                        () => VerticalDragGestureRecognizer())
                   },
                   myLocationEnabled: true,
                   zoomControlsEnabled: false,
@@ -539,5 +543,4 @@ Widget _buildCardStack() {
       ),
     );
   }
-
 }

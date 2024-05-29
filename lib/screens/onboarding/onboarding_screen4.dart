@@ -92,7 +92,7 @@ class _StudentCounterState extends State<StudentCounter> {
 
             return Positioned(
               left: MediaQuery.of(context).size.width * 0.7, 
-              bottom: MediaQuery.of(context).size.height * 0.295, 
+              bottom: MediaQuery.of(context).size.height * 0.287,
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 500),
                 child: Text(
