@@ -110,8 +110,7 @@ void showNoConnectionMessage() {
             },
             children: _onboardingPages,
           ),
-          // Mostrar los indicadores de página en las pantallas 1, 2 y 3
-          if (_currentPageIndex < 3)
+          if (_currentPageIndex < 4)
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -119,7 +118,7 @@ void showNoConnectionMessage() {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
-                    3,
+                    4,
                     (index) => buildIndicator(index),
                   ),
                 ),
