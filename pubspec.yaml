@@ -44,7 +44,7 @@ dependencies:
   permission_handler: ^11.3.1
   google_maps_flutter: ^2.0.10
   geolocator: ^7.7.0
-
+  flutter_cache_manager: ^3.3.2
   firebase_storage: ^11.6.10
   user_repository:
     path: packages/user_repository

@@ -1,28 +1,27 @@
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
+import 'package:resq/screens/maad/maad.dart';
 import 'package:resq/screens/map/map_view.dart';
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:newsletter_repository/newsletter_repository.dart';
-import 'package:resq/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:resq/blocs/chat_bloc/chat_bloc.dart';
 import 'package:resq/main.dart';
 import 'package:resq/screens/chat/chat_view.dart';
 import 'package:resq/screens/news/news_detail.dart';
 import 'package:resq/screens/home/emergency_form.dart';
 import 'package:resq/screens/safetytips/safety_tips_screen.dart';
+import 'package:resq/screens/settings/settings_view.dart';
 import 'package:shake/shake.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chat_repository/chat_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:card_swiper/card_swiper.dart';
-import 'package:firebase_core/firebase_core.dart';
 
-import 'package:user_repository/user_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -302,6 +301,7 @@ Widget _buildCardStack() {
 }
 
 @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -311,14 +311,17 @@ Widget _buildCardStack() {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              context.read<SignInBloc>().add(const SignOutRequired());
+            onPressed: () async {
+              var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsView()));
+              if (result == 'logout') {
+                context.read<SignInBloc>().add(const SignOutRequired());
+              }
             },
-            icon: const Icon(Icons.login),
+            icon: const Icon(Icons.settings),
           ),
         ],
-      ),
-      body: Column(
+    ),
+    body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 0), 
@@ -386,19 +389,24 @@ Widget _buildCardStack() {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 5), 
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.6, 
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                            const Color.fromRGBO(80, 225, 130, 1),
-                          ),
-                          shape: MaterialStateProperty.all<OutlinedBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                  ),
+                  const SizedBox(height: 5), 
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6, 
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MaadWidget()));
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color.fromRGBO(80, 225, 130, 1),
+                        ),
+                        shape: MaterialStateProperty.all<OutlinedBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                         child: const Text(

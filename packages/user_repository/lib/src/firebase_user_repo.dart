@@ -77,7 +77,8 @@ class FirebaseUserRepo implements UserRepository {
   }
 
   @override
-  Future<void> uploadReport(String type, String scope, String description) async {
+  Future<void> uploadReport(
+      String type, String scope, String description) async {
     try {
       if (scope == 'community') {
         await FirebaseFirestore.instance.collection('reports').add({
@@ -97,6 +98,18 @@ class FirebaseUserRepo implements UserRepository {
     } catch (e) {
       log(e.toString());
       rethrow;
+    }
+  }
+
+  @override
+  Future<void> sendReportToServer(String description, String cause) async {
+    try {
+      await FirebaseFirestore.instance.collection('MADD').add({
+        'cause': cause,
+        'description': description
+      });
+    } catch (e) {
+      log(e.toString());
     }
   }
 }
