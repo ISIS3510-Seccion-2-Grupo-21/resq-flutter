@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:newsletter_repository/src/models/models.dart';
 
 class FirebaseNewsletterRepository {
   final FirebaseFirestore _firestore;
