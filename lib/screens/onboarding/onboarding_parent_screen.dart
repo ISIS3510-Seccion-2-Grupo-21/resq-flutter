@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:resq/main.dart';
 import 'package:resq/screens/onboarding/onboarding_screen1.dart';
 import 'package:resq/screens/onboarding/onboarding_screen2.dart';
 import 'package:resq/screens/onboarding/onboarding_screen3.dart';
 import 'package:resq/screens/onboarding/final_onboarding_screen.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:resq/screens/onboarding/onboarding_screen4.dart';
 
 class OnboardingParentScreen extends StatefulWidget {
   @override
@@ -17,13 +20,81 @@ class _OnboardingParentScreenState extends State<OnboardingParentScreen> {
   @override
   void initState() {
     super.initState();
+    Connectivity().onConnectivityChanged.listen((result) {
+      if (result[0] == ConnectivityResult.none) {
+        showNoConnectionMessage();
+      }
+    });
+    checkConnectivityAndShowMessage();
+
     _onboardingPages = [
       OnboardingScreen1(navigateToNextScreen),
       OnboardingScreen2(navigateToNextScreen),
       OnboardingScreen3(navigateToNextScreen),
-      FinalOnboardingScreen(),
+      OnboardingScreen4(navigateToNextScreen),
+      const FinalOnboardingScreen(),
     ];
   }
+
+  Future<void> checkConnectivityAndShowMessage() async {
+    bool isConnected = await MyApp.checkInternetConnection();
+    if (!isConnected) {
+      showNoConnectionMessage();
+    }
+  }
+
+void showNoConnectionMessage() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        content: 
+            Row(
+              children: [
+                Icon(
+                  Icons.wifi,
+                  color: Colors.grey[900],
+                ),
+                SizedBox(width: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3),
+                    border: Border.all(color: Colors.grey[900]!),
+                    color: Colors.white,
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  child: Text(
+                    'You have lost connection.',
+                    style: TextStyle(color: Colors.grey[900]),
+                  ),
+                ),
+              ],
+            ), 
+        actions: [
+                TextButton(
+                  onPressed:() {
+                    Navigator.pop(context);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      const Color.fromRGBO(80, 225, 130, 1),
+                    ),
+                  ),
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+        ],
+      );
+    },
+  );
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +110,7 @@ class _OnboardingParentScreenState extends State<OnboardingParentScreen> {
             },
             children: _onboardingPages,
           ),
-          // Mostrar los indicadores de página en las pantallas 1, 2 y 3
-          if (_currentPageIndex < 3)
+          if (_currentPageIndex < 4)
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -48,7 +118,7 @@ class _OnboardingParentScreenState extends State<OnboardingParentScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
-                    3,
+                    4,
                     (index) => buildIndicator(index),
                   ),
                 ),
@@ -87,3 +157,5 @@ class _OnboardingParentScreenState extends State<OnboardingParentScreen> {
     }
   }
 }
+
+ 

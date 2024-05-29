@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:resq/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:resq/screens/auth/welcome_screen.dart';
 
+
+
 class FinalOnboardingScreen extends StatelessWidget {
   const FinalOnboardingScreen({super.key});
 
@@ -18,15 +20,14 @@ class FinalOnboardingScreen extends StatelessWidget {
             width: double.infinity,
             height: double.infinity,
           ),
-          // Get Started button centered in the screen
           Center(
             child: SizedBox(
               width: double.infinity,
               height: MediaQuery.of(context).size.height *
-                  0.35, // Altura del SizedBox
+                  0.35, 
               child: Column(
                 mainAxisAlignment: MainAxisAlignment
-                    .end, // Alinea el contenido al final del Column
+                    .end, 
                 children: [
                   ElevatedButton(
                     onPressed: () {
@@ -43,3 +44,5 @@ class FinalOnboardingScreen extends StatelessWidget {
     );
   }
 }
+
+

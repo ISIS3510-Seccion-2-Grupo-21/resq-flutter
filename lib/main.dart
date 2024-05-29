@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:resq/firebase_options.dart';
 import 'package:resq/screens/auth/login_process.dart';
 import 'package:user_repository/user_repository.dart';
@@ -14,11 +15,19 @@ void main() async {
   );
 
   // Run the app
-  runApp(const MyApp());
+  runApp(MyApp()); // Cambia LoginProcess por MyApp
+}
+
+Future<void> requestPermissions() async {
+  // Request camera and storage permissions
+  print("Requesting permissions");
+  await Permission.location.request();
+  await Permission.camera.request();
+  await Permission.storage.request();
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +35,15 @@ class MyApp extends StatelessWidget {
       home: InternetCheckScreen(),
     );
   }
+
+  static Future<bool> checkInternetConnection() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    return connectivityResult != ConnectivityResult.none;
+  }
 }
 
 class InternetCheckScreen extends StatefulWidget {
-  const InternetCheckScreen({super.key});
+  const InternetCheckScreen({Key? key}) : super(key: key);
 
   @override
   _InternetCheckScreenState createState() => _InternetCheckScreenState();
@@ -46,15 +60,15 @@ class _InternetCheckScreenState extends State<InternetCheckScreen> {
     // Listen for changes in connectivity status
     Connectivity().onConnectivityChanged.listen((result) {
       setState(() {
-        _isConnected = result[0] != ConnectivityResult.none;
+        _isConnected = result != ConnectivityResult.none;
       });
     });
   }
 
   Future<void> checkInternetConnection() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
+    var connectivityResult = await Connectivity().checkConnectivity();
     setState(() {
-      _isConnected = connectivityResult[0] != ConnectivityResult.none;
+      _isConnected = connectivityResult != ConnectivityResult.none;
     });
   }
 

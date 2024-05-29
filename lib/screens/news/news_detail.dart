@@ -49,15 +49,35 @@ class NewsDetailScreen extends StatelessWidget {
           } else {
             final newsletter = snapshot.data!;
             return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.network(newsletter['imagen']),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(newsletter['cuerpo']),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.network(newsletter['imagen']),
+                    SizedBox(height: 16.0),
+                    Text(
+                      newsletter['titulo'],
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      'Por ${newsletter['autor']} - ${newsletter['fecha']}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    Text(
+                      newsletter['cuerpo'],
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
               ),
             );
           }

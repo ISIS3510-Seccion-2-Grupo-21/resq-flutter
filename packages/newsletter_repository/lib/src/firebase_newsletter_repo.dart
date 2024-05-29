@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:newsletter_repository/src/models/models.dart';
 
 class FirebaseNewsletterRepository {
   final FirebaseFirestore _firestore;
@@ -17,6 +16,8 @@ class FirebaseNewsletterRepository {
           'titulo': (data['titulo'] ?? '') as String,
           'imagen': (data['imagen'] ?? '') as String,
           'cuerpo': (data['cuerpo'] ?? '') as String,
+          'autor': (data['autor'] ?? '') as String,
+          'fecha': (data['fecha'] ?? '') as String,
         };
       }).toList();
     });
@@ -32,6 +33,8 @@ class FirebaseNewsletterRepository {
         'titulo': (data['titulo'] ?? '') as String,
         'imagen': (data['imagen'] ?? '') as String,
         'cuerpo': (data['cuerpo'] ?? '') as String,
+        'autor': (data['autor'] ?? '') as String,
+        'fecha': (data['fecha'] ?? '') as String,
       };
     } else {
       throw Exception('Newsletter with ID $newsletterId not found.');

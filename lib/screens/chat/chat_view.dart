@@ -1,9 +1,6 @@
 import 'dart:io';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:bloc/bloc.dart';
 import 'package:chat_repository/chat_repository.dart';
 
 import '../../blocs/chat_bloc/chat_bloc.dart';
