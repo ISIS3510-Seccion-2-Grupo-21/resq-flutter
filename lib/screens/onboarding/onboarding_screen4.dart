@@ -13,32 +13,38 @@ class OnboardingScreen4 extends StatelessWidget {
       home: Scaffold(
         body: Stack(
           children: [
+            Image.asset(
+              'assets/onboarding4.png', 
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            ),
             StudentCounter(navigateToNextScreen: navigateToNextScreen),
             Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: InkWell(
-                onTap: navigateToNextScreen,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    'Next',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.green[400],
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: InkWell(
+                  onTap: navigateToNextScreen,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      'Next',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.green[400],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
           ],
-        ), 
+        ),
       ),
     );
   }
@@ -50,7 +56,6 @@ class StudentCounter extends StatefulWidget {
   const StudentCounter({super.key, required this.navigateToNextScreen});
 
   @override
-  // ignore: library_private_types_in_public_api
   _StudentCounterState createState() => _StudentCounterState();
 }
 
@@ -74,39 +79,37 @@ class _StudentCounterState extends State<StudentCounter> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          StreamBuilder<QuerySnapshot>(
-            stream: _studentsStream,
-            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              }
+    return Stack(
+      children: [
+        StreamBuilder<QuerySnapshot>(
+          stream: _studentsStream,
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
 
-              int studentCount = snapshot.data?.docs.length ?? 0;
+            int studentCount = snapshot.data?.docs.length ?? 0;
 
-              return Center(
+            return Positioned(
+              left: MediaQuery.of(context).size.width * 0.7, 
+              bottom: MediaQuery.of(context).size.height * 0.295, 
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 500),
                 child: Text(
-                  'Join the community that is now conformed by ' + 
-                  '$studentCount! students from your university',
+                  '$studentCount', 
                   key: ValueKey<int>(studentCount),
                   style: const TextStyle(
-                    fontSize: 35.0,
-                    fontWeight: FontWeight.bold, // Change the color here
-                    fontFamily: 'DM Sans', // Ensure the font family is set
+                    fontSize: 16.55,
+                    fontWeight: FontWeight.w600, 
+                    fontFamily: 'SFPro', 
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
             );
-            },
-          ),
-        ],
-      ),
+          },
+        ),
+      ],
     );
   }
 }

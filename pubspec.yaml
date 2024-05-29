@@ -92,8 +92,14 @@ flutter:
    - assets/onboarding1.png
    - assets/onboarding2.png
    - assets/onboarding3.png
+   - assets/onboarding4.png
    - assets/onboardingFinal.png
    - assets/newsletter.png
+
+  fonts:
+    - family: SFPro
+      fonts:
+        - asset: fonts/SFPRODISPLAYREGULAR.OTF
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
